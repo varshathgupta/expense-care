@@ -1,6 +1,6 @@
 # Expense Care
 
-A web application to take care of one’s expenses by keeping an eye on them in a simple way. The app solves a very real problem of keeping an account of your regular every day expenses and making it available to view in various formats, so that one can easily analyse their spendings.
+A web application to take care of chruch's expenses by keeping an eye on them in a simple way. The app solves a very real problem of keeping an account of your regular every day expenses and making it available to view in various formats, so that one can easily analyse their spendings.
 
 The application has been built by keeping in mind, that accounting our everyday expenses will only be possible for most people, if adding an expense is a very quick and easy process. Hence the app requires minimum details when one adds any expense although optional description is always possible if required.
 
@@ -12,8 +12,6 @@ Lastly every aspect of the application has been consciously kept simple and intu
 
 **Client:** React, React-Router, Redux, Chakra UI, recharts
 
-**Server:** Appwrite, Docker
+**Server:** Appwrite
 
-## Demo
 
-Demo Video : https://www.youtube.com/watch?v=jZ3hhEZ1sR0
