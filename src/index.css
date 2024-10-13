@@ -1,0 +1,12 @@
+body {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.active {
+  text-decoration: underline;
+  text-underline-offset: 8px;
+  text-decoration-color: teal;
+  text-decoration-thickness: 6px;
+}

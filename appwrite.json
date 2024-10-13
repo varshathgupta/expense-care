@@ -1,0 +1,96 @@
+{
+    "projectId": "64726c3cc1a19aee8adc",
+    "projectName": "expense-care",
+    "functions": [
+        {
+            "$id": "6481788f8eaa2d8405a9",
+            "name": "updateCategoryTotalAmount",
+            "runtime": "node-16.0",
+            "path": "functions/updateCategoryTotalAmount",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        },
+        {
+            "$id": "648335ecea749c3fe318",
+            "name": "updateUserTotalAmount",
+            "runtime": "node-16.0",
+            "path": "functions/updateUserTotalAmount",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        },
+        {
+            "$id": "6486e4fe77e5a7fe51dd",
+            "name": "UpdateCategoryTotalExpense",
+            "runtime": "node-16.0",
+            "path": "functions/UpdateCategoryTotalExpense",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        },
+        {
+            "$id": "64878df88c53d3017937",
+            "name": "SignupUsingGoogle",
+            "runtime": "node-16.0",
+            "path": "functions/SignupUsingGoogle",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        },
+        {
+            "$id": "648820aae2e5702bd6b7",
+            "name": "UpdateCurrYearAndMonth",
+            "runtime": "node-16.0",
+            "path": "functions/UpdateCurrYearAndMonth",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        },
+        {
+            "$id": "64886ba18006a471d05e",
+            "name": "updateYearAndMonth",
+            "runtime": "node-16.0",
+            "path": "functions/updateYearAndMonth",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        }
+    ]
+}

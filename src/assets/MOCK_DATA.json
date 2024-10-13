@@ -1,0 +1,413 @@
+[
+  {
+    "id": 1,
+    "expenseName": "WIDOW SUPPORT",
+    "category": "payments",
+    "date": "04/03/2024",
+    "description": "Paid to someone",
+    "amount": 7181
+  },
+  {
+    "id": 2,
+    "expenseName": "CARE TACKER SUPPORT",
+    "category": "payments",
+    "date": "04/03/2024",
+    "description": "Paid to caretaker",
+    "amount": 5000
+  },
+  {
+    "id": 3,
+    "expenseName": "STATIONERY",
+    "category": "payments",
+    "date": "04/03/2024",
+    "description": "Purchased supplies",
+    "amount": 1500
+  },
+  {
+    "id": 4,
+    "expenseName": "GRAVEYARD CLEANING",
+    "category": "payments",
+    "date": "04/03/2024",
+    "description": "Cleaning expenses",
+    "amount": 2500
+  },
+  {
+    "id": 5,
+    "expenseName": "TOILET CLEANING",
+    "category": "payments",
+    "date": "04/03/2024",
+    "description": "Cleaning expenses",
+    "amount": 1200
+  },
+  {
+    "id": 6,
+    "expenseName": "CHURCH CLEANING",
+    "category": "payments",
+    "date": "04/03/2024",
+    "description": "Church cleaning expenses",
+    "amount": 1800
+  },
+  {
+    "id": 7,
+    "expenseName": "INSTRUMENT PURCHASE",
+    "category": "payments",
+    "date": "04/03/2024",
+    "description": "Purchased instruments",
+    "amount": 7500
+  },
+  {
+    "id": 8,
+    "expenseName": "TEA EXPENSES",
+    "category": "payments",
+    "date": "04/03/2024",
+    "description": "Tea expenses",
+    "amount": 800
+  },
+  {
+    "id": 9,
+    "expenseName": "FOOD EXPENSES",
+    "category": "payments",
+    "date": "04/03/2024",
+    "description": "Food expenses",
+    "amount": 2200
+  },
+  {
+    "id": 10,
+    "expenseName": "GENERATOR MAINTENANCE",
+    "category": "payments",
+    "date": "04/03/2024",
+    "description": "Maintenance of generator",
+    "amount": 3000
+  },
+  {
+    "id": 11,
+    "expenseName": "CHURCH GROUND CLEANING",
+    "category": "payments",
+    "date": "04/03/2024",
+    "description": "Ground cleaning expenses",
+    "amount": 1600
+  },
+  {
+    "id": 12,
+    "expenseName": "EB BILL",
+    "category": "payments",
+    "date": "04/03/2024",
+    "description": "Electricity bill",
+    "amount": 4300
+  },
+  {
+    "id": 13,
+    "expenseName": "TELEPHONE BILL",
+    "category": "payments",
+    "date": "04/03/2024",
+    "description": "Telephone bill",
+    "amount": 1100
+  },
+  {
+    "id": 14,
+    "expenseName": "ELECTRICAL MAINTENANCE",
+    "category": "payments",
+    "date": "04/03/2024",
+    "description": "Electrical maintenance expenses",
+    "amount": 2700
+  },
+  {
+    "id": 15,
+    "expenseName": "CONGREGATIONAL CONFERENCE FOOD & TEA",
+    "category": "payments",
+    "date": "04/03/2024",
+    "description": "Conference refreshments",
+    "amount": 4000
+  },
+  {
+    "id": 16,
+    "expenseName": "CONGREGATIONAL CONFERENCE STATIONERY & PRINTING",
+    "category": "payments",
+    "date": "04/03/2024",
+    "description": "Stationery for conference",
+    "amount": 1500
+  },
+  {
+    "id": 17,
+    "expenseName": "MALLINGAPURAM AUTO",
+    "category": "payments",
+    "date": "04/03/2024",
+    "description": "Auto expenses",
+    "amount": 600
+  },
+  {
+    "id": 18,
+    "expenseName": "MALLINGAPURAM RENT",
+    "category": "payments",
+    "date": "04/03/2024",
+    "description": "Rent for Mallingapuram location",
+    "amount": 1200
+  },
+  {
+    "id": 19,
+    "expenseName": "MALLINGAPURAM SUNDAY CLASS BISCUIT",
+    "category": "payments",
+    "date": "04/03/2024",
+    "description": "Snacks for Sunday class",
+    "amount": 300
+  },
+  {
+    "id": 20,
+    "expenseName": "UTHAMAPALAYAM SUNDAY CLASS SNACKS",
+    "category": "payments",
+    "date": "04/03/2024",
+    "description": "Snacks for Sunday class",
+    "amount": 400
+  },
+  {
+    "id": 21,
+    "expenseName": "MISCELLANEOUS",
+    "category": "payments",
+    "date": "04/03/2024",
+    "description": "Miscellaneous expenses",
+    "amount": 500
+  },
+  {
+    "id": 1,
+    "expenseName": "VBS STUDY MATERIAL",
+    "category": "VBS",
+    "date": "04/03/2024",
+    "description": "Study materials for VBS",
+    "amount": 5000
+  },
+  {
+    "id": 2,
+    "expenseName": "VBS SNACKS & DRINKS",
+    "category": "VBS",
+    "date": "04/03/2024",
+    "description": "Snacks and drinks for VBS",
+    "amount": 3000
+  },
+  {
+    "id": 3,
+    "expenseName": "VBS TRANSPORT",
+    "category": "VBS",
+    "date": "04/03/2024",
+    "description": "Transport for VBS attendees",
+    "amount": 2500
+  },
+  {
+    "id": 4,
+    "expenseName": "VBS FOOD",
+    "category": "VBS",
+    "date": "04/03/2024",
+    "description": "Food expenses for VBS",
+    "amount": 4500
+  },
+  {
+    "id": 5,
+    "expenseName": "VBS TEACHERS REFRESHMENT",
+    "category": "VBS",
+    "date": "04/03/2024",
+    "description": "Refreshments for VBS teachers",
+    "amount": 1800
+  },
+  {
+    "id": 6,
+    "expenseName": "VBS TEACHERS TRAVEL EXPENSES",
+    "category": "VBS",
+    "date": "04/03/2024",
+    "description": "Travel expenses for VBS teachers",
+    "amount": 2200
+  },
+  {
+    "id": 7,
+    "expenseName": "VBS MAKEUP THINGS",
+    "category": "VBS",
+    "date": "04/03/2024",
+    "description": "Makeup items for VBS",
+    "amount": 1200
+  },
+  {
+    "id": 8,
+    "expenseName": "VBS STATIONERY",
+    "category": "VBS",
+    "date": "04/03/2024",
+    "description": "Stationery for VBS",
+    "amount": 1500
+  },
+  {
+    "id": 9,
+    "expenseName": "VBS CHILDREN'S GIFT",
+    "category": "VBS",
+    "date": "04/03/2024",
+    "description": "Gifts for children at VBS",
+    "amount": 3500
+  },
+  {
+    "id": 10,
+    "expenseName": "VBS TEACHER'S GIFT",
+    "category": "VBS",
+    "date": "04/03/2024",
+    "description": "Gifts for teachers at VBS",
+    "amount": 2000
+  },
+  {
+    "id": 11,
+    "expenseName": "VBS VOLUNTEER'S TRAVEL & STAY",
+    "category": "VBS",
+    "date": "04/03/2024",
+    "description": "Travel and stay for VBS volunteers",
+    "amount": 4000
+  },
+  {
+    "id": 12,
+    "expenseName": "VBS SHELTER & SAMIYANA",
+    "category": "VBS",
+    "date": "04/03/2024",
+    "description": "Shelter and samiyana for VBS",
+    "amount": 3500
+  },
+  {
+    "id": 13,
+    "expenseName": "VBS COOK'S SALARY",
+    "category": "VBS",
+    "date": "04/03/2024",
+    "description": "Cook's salary for VBS",
+    "amount": 2500
+  },
+  {
+    "id": 1,
+    "expenseName": "CHRISTMAS TRANSPORT",
+    "category": "Christmas",
+    "date": "04/03/2024",
+    "description": "Transport expenses for Christmas",
+    "amount": 4000
+  },
+  {
+    "id": 2,
+    "expenseName": "CHRISTMAS FOOD & TEA",
+    "category": "Christmas",
+    "date": "04/03/2024",
+    "description": "Food and tea for Christmas event",
+    "amount": 3500
+  },
+  {
+    "id": 3,
+    "expenseName": "CHRISTMAS PROGRAMME MAKEUP THINGS",
+    "category": "Christmas",
+    "date": "04/03/2024",
+    "description": "Makeup items for Christmas programme",
+    "amount": 1800
+  },
+  {
+    "id": 4,
+    "expenseName": "CHRISTMAS CHILDRENS GIFT",
+    "category": "Christmas",
+    "date": "04/03/2024",
+    "description": "Gifts for children at Christmas",
+    "amount": 3000
+  },
+  {
+    "id": 5,
+    "expenseName": "CHRISTMAS COOK'S SALARY",
+    "category": "Christmas",
+    "date": "04/03/2024",
+    "description": "Cook's salary for Christmas event",
+    "amount": 2500
+  },
+  {
+    "id": 6,
+    "expenseName": "CHRISTMAS CHILDRENS PROGRAMME FOOD",
+    "category": "Christmas",
+    "date": "04/03/2024",
+    "description": "Food for children's Christmas programme",
+    "amount": 3200
+  },
+  {
+    "id": 7,
+    "expenseName": "CHRISTMAS SERIAL LIGHT EXPENSES",
+    "category": "Christmas",
+    "date": "04/03/2024",
+    "description": "Expenses for serial lights during Christmas",
+    "amount": 2000
+  },
+  {
+    "id": 8,
+    "expenseName": "CHRISTMAS DECORATION THINGS",
+    "category": "Christmas",
+    "date": "04/03/2024",
+    "description": "Decoration items for Christmas",
+    "amount": 1500
+  },
+  {
+    "id": 9,
+    "expenseName": "CHRISTMAS SONG PRACTICE TEA EXPENSES",
+    "category": "Christmas",
+    "date": "04/03/2024",
+    "description": "Tea expenses for song practice",
+    "amount": 1200
+  },
+  {
+    "id": 10,
+    "expenseName": "CHRISTMAS VOLUNTEER'S FOOD",
+    "category": "Christmas",
+    "date": "04/03/2024",
+    "description": "Food for Christmas volunteers",
+    "amount": 2800
+  },
+  {
+    "id": 11,
+    "expenseName": "CHRISTMAS VOLUNTEER'S TRAVEL",
+    "category": "Christmas",
+    "date": "04/03/2024",
+    "description": "Travel expenses for Christmas volunteers",
+    "amount": 2300
+  },
+  {
+    "id": 12,
+    "expenseName": "CHRISTMAS CHILDRENS PROGRAMME TRANSPORT",
+    "category": "Christmas",
+    "date": "04/03/2024",
+    "description": "Transport for children's Christmas programme",
+    "amount": 2600
+  },
+  {
+    "id": 13,
+    "expenseName": "NEW YEAR TRANSPORT",
+    "category": "Christmas",
+    "date": "04/03/2024",
+    "description": "Transport expenses for New Year",
+    "amount": 3000
+  },
+  {
+    "id": 14,
+    "expenseName": "NEW YEAR TEA & SNACKS",
+    "category": "Christmas",
+    "date": "04/03/2024",
+    "description": "Tea and snacks for New Year",
+    "amount": 2000
+  },
+  {
+    "id": 15,
+    "expenseName": "NEW YEAR CHURCH VOLUNTEER'S GIFT",
+    "category": "Christmas",
+    "date": "04/03/2024",
+    "description": "Gifts for church volunteers at New Year",
+    "amount": 2500
+  },
+  {
+    "id": 16,
+    "expenseName": "CHURCH WHITE WASH LABOUR & MATERIAL",
+    "category": "Christmas",
+    "date": "04/03/2024",
+    "description": "Labour and material for church white wash",
+    "amount": 1800
+  },
+  {
+    "id": 17,
+    "expenseName": "MISCELLANEOUS",
+    "category": "Christmas",
+    "date": "04/03/2024",
+    "description": "Miscellaneous expenses",
+    "amount": 1000
+  }
+]
+
+
+
