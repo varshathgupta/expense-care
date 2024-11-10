@@ -53,7 +53,7 @@ function ExpenseCard({ category }) {
         variant={"elevated"}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
-        borderRadius={"40px"}
+        borderRadius={"20px"}
       >
 
         <CardHeader fontSize={"xl"} fontWeight={"semibold"} padding={'10px'}>

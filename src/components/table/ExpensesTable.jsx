@@ -65,7 +65,7 @@ function ExpensesTable({ filteredExpenses, windowWidth, showAllColumns }) {
     );
   }, [currentPage]);
 
-  if (filteredExpenses?.length === 0) {
+  if (filteredExpenses.length === 0) {
     return (
       <Flex
         bgColor={"lightgray"}

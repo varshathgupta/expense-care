@@ -159,60 +159,44 @@ export function deleteCategory(userId, categoryId) {
 
 /* To add an expense to a particular category (also updates the totalAmount of that category and fetch the updated data into the state) */
 export function addExpense(userId, categoryId, expenseDetails, categoryName) {
-  return function (dispatch) {
-    let { amount, name, description } = expenseDetails;
+  return async function (dispatch) {
+    try {
+      const { amount, name, description } = expenseDetails;
+      const dateObj = new Date();
 
-    amount = parseInt(amount);
-    let date = new Date();
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const time = date.getTime();
+      const formattedDate = dateObj.toLocaleDateString(undefined, {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
 
-    date = date.toLocaleDateString(undefined, {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
+      const expenseData = {
+        amount: parseInt(amount),  // Ensure type matches Appwrite schema
+        name: name,
+        description: description,
+        date: formattedDate,
+      };
 
-    // creating a new expense document
-    const promise = databases.createDocument(
-      import.meta.env.VITE_DB_ID,
-      import.meta.env.VITE_DB_EXPENSE_ID,
-      ID.unique(),
-      {
-        amount,
-        name,
-        description,
-        date,
-        year,
-        month,
-        category: categoryId,
-        user: userId,
-        categoryId,
-        userId,
-        time: time,
-        categoryName,
-      }
-    );
+      await databases.createDocument(
+        import.meta.env.VITE_DB_ID,
+        import.meta.env.VITE_DB_EXPENSE_ID,
+        ID.unique(),
+        expenseData
+      );
 
-    promise.then(
-      () => {
-        // updating total amount in category collection
-
-        dispatch(
-          updateCategoryTotalExpense(actions.ON_ADD_EXPENSE, {
-            userId,
-            categoryId,
-            amount,
-          })
-        );
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
+      dispatch(
+        updateCategoryTotalExpense(actions.ON_ADD_EXPENSE, {
+          userId,
+          categoryId,
+          amount,
+        })
+      );
+    } catch (error) {
+      console.error('Error adding expense:', error);
+    }
   };
 }
+
 
 /* To edit an expense details (aslo updates the corresponding category's totalAmount and fetches the updated data into the state) */
 export function editExpense(expenseId, expenseDetails, oldAmount) {

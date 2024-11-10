@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import ExpensesTable from "../components/table/ExpensesTable";
 import Filters from "../components/table/Filters";
-import { useSelector } from "react-redux";
 import  expenses  from "../assets/MOCK_DATA.json";
 
 function AllExpenses() {

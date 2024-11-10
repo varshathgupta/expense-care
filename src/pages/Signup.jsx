@@ -133,16 +133,6 @@ function Signup() {
     );
   }
 
-  function signinUsingGoogleHandler() {
-    dispatch(loadingActions.setLoading(true));
-    account.createOAuth2Session(
-      "google",
-      "http://localhost:3000/verification",
-      "http://localhost:3000/login"
-    );
-
-    dispatch(loadingActions.setLoading(false));
-  }
 
   if (isLoading) {
     return <Loading loading={isLoading} />;
@@ -239,15 +229,6 @@ function Signup() {
             </Button>
             <Text textAlign={"center"}>Or</Text>
 
-            {/* Google Signup button */}
-            <Button
-              colorScheme="blue"
-              width={"full"}
-              mb={4}
-              onClick={signinUsingGoogleHandler}
-            >
-              Signin using Google
-            </Button>
 
             {/* Link to Login */}
 
