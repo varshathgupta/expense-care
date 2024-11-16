@@ -1,8 +1,5 @@
 import { ID, Query } from "appwrite";
-import {  databases,  } from "../appwrite/appwrite-config";
-import { dataActions } from "./data-slice";
-import { filterActions } from "./filter-slice";
-
+import { databases } from "../appwrite/appwrite-config";
 
 const actions = {
   ON_ADD_EXPENSE: "ON_ADD_EXPENSE",
@@ -11,104 +8,59 @@ const actions = {
 };
 
 /* To fetch data after any changes in the database or to fetch data into state on login*/
-export function fetchData(userId) {
-  return function (dispatch) {
-    databases
-      .listDocuments(
+export async function fetchData() {
+  try {
+    // Fetch categories and expenses in parallel
+    const [categories, expenses] = await Promise.all([
+      databases.listDocuments(
         import.meta.env.VITE_DB_ID,
-        import.meta.env.VITE_DB_CATEGORY_ID,
-        [Query.equal("userId", userId)]
+        import.meta.env.VITE_DB_CATEGORY_ID
+      ),
+      databases.listDocuments(
+        import.meta.env.VITE_DB_ID, 
+        import.meta.env.VITE_DB_EXPENSE_ID,
+        [Query.limit(5)]
       )
-      .then(
-        (categories) => {
-          databases
-            .listDocuments(
-              import.meta.env.VITE_DB_ID,
-              import.meta.env.VITE_DB_EXPENSE_ID,
-              [Query.equal("userId", userId), Query.limit(5)]
-            )
-            .then(
-              (expenses) => {
-                databases
-                  .getDocument(
-                    import.meta.env.VITE_DB_ID,
-                    import.meta.env.VITE_DB_USER_ID,
-                    userId
-                  )
-                  .then(
-                    (userDocument) => {
-                      dispatch(
-                        dataActions.setData({
-                          expenses: expenses.documents,
-                          categories: categories.documents,
-                          userDocument,
-                        })
-                      );
-                      dispatch(filterActions.setFilteredExpenses(expenses));
-                    },
-                    (error) => {
-                      console.log(error);
-                    }
-                  );
-              },
-              (error) => {
-                console.log(error);
-              }
-            );
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-  };
+    ]);
+
+    return {
+      expenses: expenses.documents,
+      categories: categories.documents
+    };
+
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw error; // Re-throw to allow error handling by caller
+  }
 }
 
 /* To add a new category */
-export function addCategory(userId, categoryName) {
+export function addCategory(userId, userEmail, categoryData) {
+  const { name, type, subCategories } = categoryData;
   console.log(
     import.meta.env.VITE_DB_ID, // Database ID
-        import.meta.env.VITE_DB_USER_ID, // User Collection ID
-        userId
-  )
+    import.meta.env.VITE_DB_USER_ID, // User Collection ID
+    userId
+  );
   return async function (dispatch) {
     try {
-      // Fetch the user document
-      const userDocument = await databases.getDocument(
-        import.meta.env.VITE_DB_ID, // Database ID
-        import.meta.env.VITE_DB_USER_ID, // User Collection ID
-        userId // Document ID for the user
-      );
-
-      // Check if the category already exists for the user
-      const categoryExists = userDocument.categories.find(
-        (category) => category.name.toLowerCase() === categoryName.toLowerCase()
-      );
-
-      console.log("Category Exists:", categoryExists);
-
-      if (categoryExists) {
-        return userDocument; // Category already exists, so no need to add it
-      }
-
-      // Create a new category document if it doesn't exist
-      const updatedCategoryDocument = await databases.createDocument(
+      await databases.createDocument(
         import.meta.env.VITE_DB_ID, // Database ID
         import.meta.env.VITE_DB_CATEGORY_ID, // Category Collection ID
         ID.unique(), // Unique ID for the new document
         {
-          name: categoryName, // Category name
-          user: userId, // User ID reference
-          userId: userId, // Optional additional userId field
+          name: name, // Category name
+          userId: userId, // User ID reference
+          userEmail: userEmail,
+          type: type,
+          subCategories: subCategories,
         }
       );
 
-      console.log("New Category Created:", updatedCategoryDocument);
-
       // Delay dispatch to ensure the update is propagated
       setTimeout(() => dispatch(fetchData(userId)), 3000);
-
     } catch (error) {
-      console.error('Error in addCategory:', error);
+      console.error("Error in addCategory:", error);
     }
   };
 }
@@ -158,25 +110,25 @@ export function deleteCategory(userId, categoryId) {
 }
 
 /* To add an expense to a particular category (also updates the totalAmount of that category and fetch the updated data into the state) */
-export function addExpense(userId, categoryId, expenseDetails, categoryName) {
+export function addExpense(
+  userEmail,
+  categoryId,
+  expenseDetails,
+  categoryName,
+  userId
+) {
   return async function (dispatch) {
     try {
-      const { amount, name, description } = expenseDetails;
-      const dateObj = new Date();
-
-      const formattedDate = dateObj.toLocaleDateString(undefined, {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      });
-
+      const { amount, name, description, date, amountType } = expenseDetails;
       const expenseData = {
-        amount: parseInt(amount),  // Ensure type matches Appwrite schema
+        amount: parseInt(amount), // Ensure type matches Appwrite schema
         name: name,
         description: description,
-        date: formattedDate,
+        date: date,
+        amountType: amountType,
+        categoryId: categoryId,
+        userEmail: userEmail,
       };
-
       await databases.createDocument(
         import.meta.env.VITE_DB_ID,
         import.meta.env.VITE_DB_EXPENSE_ID,
@@ -192,11 +144,10 @@ export function addExpense(userId, categoryId, expenseDetails, categoryName) {
         })
       );
     } catch (error) {
-      console.error('Error adding expense:', error);
+      console.error("Error adding expense:", error);
     }
   };
 }
-
 
 /* To edit an expense details (aslo updates the corresponding category's totalAmount and fetches the updated data into the state) */
 export function editExpense(expenseId, expenseDetails, oldAmount) {

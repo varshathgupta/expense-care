@@ -1,32 +1,54 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+// Initial state for expense data
+const expenseInitialState = {
   categories: [],
   expenses: [],
-  userCurrYearExpense: null,
-  userCurrMonthExpense: null,
-  yearlyExpensesOnCard: false,
+  // userCurrYearExpense: null,
+  // userCurrMonthExpense: null,
 };
 
-/* State to provide and set the updated categories and expenses data to all the app components */
+// Initial state for display preferences
+const displayInitialState = {
+  yearlyExpensesOnCard: false
+};
 
-const dataSlice = createSlice({
-  name: "data",
-  initialState: initialState,
+/* State to provide and set the updated categories and expenses data */
+const expenseSlice = createSlice({
+  name: "expenseData",
+  initialState: expenseInitialState,
   reducers: {
     /* sets the fetched data received in payload to the state */
     setData(state, action) {
-      state.categories = action.payload.categories;
-      state.expenses = action.payload.expenses;
-      state.userCurrYearExpense = action.payload.userDocument.currYearExpense;
-      state.userCurrMonthExpense = action.payload.userDocument.currMonthExpense;
-    },
-    setYearlyExpensesOnCard(state, action) {
-      state.yearlyExpensesOnCard = action.payload;
-    },
-  },
+      const { categories, expenses} = action.payload || {};
+      
+      return {
+        ...state,
+        categories: categories || [],
+        expenses: expenses || [],
+        // userCurrYearExpense: currYearExpense || 0,
+        // userCurrMonthExpense: currMonthExpense || 0
+      };
+    }
+  }
 });
 
-export const dataActions = dataSlice.actions;
+/* State to manage display preferences */
+const displaySlice = createSlice({
+  name: "displayPreferences", 
+  initialState: displayInitialState,
+  reducers: {
+    setYearlyExpensesOnCard(state, action) {
+      return {
+        ...state,
+        yearlyExpensesOnCard: action.payload
+      };
+    }
+  }
+});
 
-export default dataSlice.reducer;
+export const expenseActions = expenseSlice.actions;
+export const displayActions = displaySlice.actions;
+
+export const expenseReducer = expenseSlice.reducer;
+export const displayReducer = displaySlice.reducer;

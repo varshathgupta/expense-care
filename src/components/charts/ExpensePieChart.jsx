@@ -1,5 +1,4 @@
 import React from "react";
-import { categories } from "../../pages/Dashboard";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { Container, Flex, Text } from "@chakra-ui/react";
 import { useSelector } from "react-redux";

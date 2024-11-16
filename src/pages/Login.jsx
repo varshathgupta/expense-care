@@ -17,7 +17,7 @@ import { useForm } from "react-hook-form";
 import { Link as RouteLink, useNavigate } from "react-router-dom";
 import { account } from "../appwrite/appwrite-config";
 import { useDispatch, useSelector } from "react-redux";
-import { authActions, updateCurrYearAndMonth } from "../store/auth-slice";
+import {  updateCurrYearAndMonth } from "../store/auth-slice";
 import { fetchData } from "../store/data-actions";
 import { loadingActions } from "../store/loading-slice";
 import Loading from "../components/utility/Loading";
@@ -44,13 +44,13 @@ function Login() {
     dispatch(loadingActions.setLoading(true));
 
     const promise = account.createEmailSession(values.email, values.password);
-console.log(promise);
     promise.then(
       (response) => {
-        // verifyEmail();
         const { userId, $id: sessionId, providerUid: userEmail } = response;
-        dispatch(authActions.setUserData({ userId, sessionId, userEmail }));
-         dispatch(updateCurrYearAndMonth(response.userId));
+       localStorage.setItem("userEmail", userEmail);
+       localStorage.setItem("userId", userEmail);
+       localStorage.setItem("sessionId", sessionId);
+        dispatch(updateCurrYearAndMonth(response.userId));
         dispatch(fetchData(response.userId));
          dispatch(loadingActions.setLoading(false));
         navigate("/dashboard");

@@ -18,7 +18,6 @@ import { account, databases } from "../appwrite/appwrite-config";
 import { ID } from "appwrite";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchData } from "../store/data-actions";
-import { authActions } from "../store/auth-slice";
 import Loading from "../components/utility/Loading";
 import { loadingActions } from "../store/loading-slice";
 

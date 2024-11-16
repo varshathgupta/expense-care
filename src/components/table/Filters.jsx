@@ -16,7 +16,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
-import { categories } from "../../pages/Dashboard";
+// import { categories } from "../../pages/Dashboard";
 import { useDispatch, useSelector } from "react-redux";
 import {
   filterActions,
@@ -121,12 +121,12 @@ function Filters({
     dispatch(loadingActions.setLoading(true));
     setSearchInput("");
     dispatch(filterActions.resetFilterInputs());
-    account.get().then(
-      (user) => {
-        dispatch(fetchData(user.$id));
-      },
-      (error) => console.log(error)
-    );
+    // account.get().then(
+    //   (user) => {
+    //     dispatch(fetchData(user.$id));
+    //   },
+    //   (error) => console.log(error)
+    // );
     dispatch(loadingActions.setLoading(false));
   }
 
@@ -188,7 +188,7 @@ function Filters({
               {filterInputs.categoryName || "Category"}
             </MenuButton>
             <MenuList bgColor={"lightgray"}>
-              {categories.map((category) => (
+              {/* {categories.map((category) => (
                 <MenuItem
                   _hover={{ bgColor: "blue.600" }}
                   key={category.id}
@@ -205,7 +205,7 @@ function Filters({
                 >
                   {category.name}
                 </MenuItem>
-              ))}
+              ))} */}
             </MenuList>
           </Menu>
 

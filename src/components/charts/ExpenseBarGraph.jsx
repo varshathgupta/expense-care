@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { categories as data } from "../../pages/Dashboard";
 import {
   Bar,
   BarChart,

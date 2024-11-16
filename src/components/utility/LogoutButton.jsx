@@ -10,13 +10,10 @@ import {
 } from "@chakra-ui/react";
 import { LogOutIcon } from "lucide-react";
 import React, { useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
 
 function LogoutButton({ logoutHandler }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
-  const dispatch = useDispatch();
-  const userId = useSelector((state) => state.auth.userId);
 
   function onLogout() {
     logoutHandler();

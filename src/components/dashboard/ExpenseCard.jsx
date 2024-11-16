@@ -10,7 +10,7 @@ import { months } from "../table/Filters";
 import { useNavigate } from "react-router-dom";
 
 function ExpenseCard({ category }) {
-  const { name, currYearExpense, currMonthExpense, id } = category;
+  const { name, currYearExpense, currMonthExpense, id , subCategories,type, userId, userEmail} = category;
   const [hover, setHover] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -76,6 +76,10 @@ function ExpenseCard({ category }) {
             setHover={setHover}
             categoryName={name}
             categoryId={id}
+            subCategories={subCategories}
+            type={type}
+            userId={userId}
+            userEmail={userEmail}
           />
         </CardFooter>
       </Card>

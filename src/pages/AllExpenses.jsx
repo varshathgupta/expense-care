@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import ExpensesTable from "../components/table/ExpensesTable";
 import Filters from "../components/table/Filters";
-import  expenses  from "../assets/MOCK_DATA.json";
+import { useSelector } from "react-redux";
+
 
 function AllExpenses() {
  // const expenses = useSelector((state) => state.filter.filteredExpenses);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
+const expenses = useSelector((state) => state.data.expenses);
   const [filteredExpenses, setFilteredExpenses] = useState(expenses);
 
   const [showAllColumns, setShowAllColumns] = useState(true);

@@ -4,7 +4,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import Loading from "../components/utility/Loading";
 
 function Root() {
-  const isLoggedIn = useSelector((state) => state.auth.userId);
+ 
   const isLoading = useSelector((state) => state.loading.isLoading);
   const navigate = useNavigate();
 

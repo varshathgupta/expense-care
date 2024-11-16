@@ -93,9 +93,6 @@ function ExpensesTable({ filteredExpenses, windowWidth, showAllColumns }) {
         <Table>
           <Thead>
             <Tr>
-              {/* <Th>
-              <Checkbox>Select</Checkbox>
-            </Th> */}
               <Th textColor={"blue.500"}>EXPENSE NAME</Th>
               <Th textColor={"blue.500"}>AMOUNT (Rs.)</Th>
               <Th
@@ -110,23 +107,26 @@ function ExpensesTable({ filteredExpenses, windowWidth, showAllColumns }) {
               >
                 DATE
               </Th>
+              <Th textColor={"blue.500"}>DESCRIPTION</Th>
               <Th textColor={"blue.500"}>Actions</Th>
             </Tr>
           </Thead>
           <Tbody>
             {filteredExpenses?.map((expense) => (
               <Tr key={expense.$id} _hover={{ bgColor: "dark" }}>
-                {/* <Td>
-                <Checkbox colorScheme="teal" />
-              </Td> */}
-                <Td>{expense.expenseName}</Td>
+                <Td>{expense.name}</Td>
                 <Td>{expense.amount}</Td>
                 <Td display={showAllColumns ? "table-cell" : "none"}>
-                  {expense.category}
+                  {expense.categoryId}
                 </Td>
                 <Td display={showAllColumns ? "table-cell" : "none"}>
-                  {expense.date}
+                  {new Date(expense.date).toLocaleDateString("en-GB", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                  })}
                 </Td>
+                <Td>{expense.description}</Td>
                 <Td>
                   <DropdownActions expense={expense} />
                 </Td>

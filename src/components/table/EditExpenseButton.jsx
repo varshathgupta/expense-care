@@ -29,7 +29,7 @@ function EditExpenseButton({ expense }) {
   });
 
   const initialRef = useRef(null);
-  const userId = useSelector((state) => state.auth.userId);
+  const userId = localStorage.getItem("userId");
   const dispatch = useDispatch();
 
   function editExpenseHandler(e) {

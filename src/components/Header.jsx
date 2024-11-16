@@ -1,10 +1,8 @@
 import { ChevronDownIcon, HamburgerIcon } from "@chakra-ui/icons";
 import {
   Button,
-  Container,
   Flex,
   IconButton,
-  Link,
   Menu,
   MenuButton,
   MenuItem,
@@ -12,18 +10,18 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { NavLink, Link as RouteLink, useNavigate } from "react-router-dom";
 import { logout } from "../store/auth-slice";
 import { loadingActions } from "../store/loading-slice";
 import LogoutButton from "./utility/LogoutButton";
-import { account } from "../appwrite/appwrite-config";
+
 
 const activeClassName = ({ isActive }) => (isActive ? "active" : undefined);
 
 function Header() {
-  const sessionId = useSelector((state) => state.auth.sessionId);
-  const userId = useSelector((state) => state.auth.userId);
+  const sessionId = localStorage.getItem("sessionId");
+  const userId = localStorage.getItem("userId");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const toast = useToast();
@@ -32,7 +30,6 @@ async  function logoutHandler() {
     dispatch(loadingActions.setLoading(true));
     if (sessionId) {
       dispatch(logout(sessionId));
-      // await account.deleteSession('current');
     } else {
       dispatch(logout(null, userId));
     }
@@ -175,16 +172,7 @@ async  function logoutHandler() {
                 Help
               </NavLink>
             </MenuItem>
-            {/* <MenuItem bgColor={"lightgray"} _hover={{ bgColor: "teal.500" }}>
-              Account
-            </MenuItem> */}
-            {/* <MenuItem
-              bgColor={"lightgray"}
-              _hover={{ bgColor: "teal.500" }}
-              onClick={logoutHandler}
-            >
-              Logout
-            </MenuItem> */}
+            
             <LogoutButton logoutHandler={logoutHandler} />
           </MenuList>
         </Menu>
