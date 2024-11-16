@@ -17,7 +17,6 @@ import { useForm } from "react-hook-form";
 import { Link as RouteLink, useNavigate } from "react-router-dom";
 import { account } from "../appwrite/appwrite-config";
 import { useDispatch, useSelector } from "react-redux";
-import {  updateCurrYearAndMonth } from "../store/auth-slice";
 import { fetchData } from "../store/data-actions";
 import { loadingActions } from "../store/loading-slice";
 import Loading from "../components/utility/Loading";
@@ -46,13 +45,12 @@ function Login() {
     const promise = account.createEmailSession(values.email, values.password);
     promise.then(
       (response) => {
-        const { userId, $id: sessionId, providerUid: userEmail } = response;
+        const {  $id: sessionId, providerUid: userEmail } = response;
        localStorage.setItem("userEmail", userEmail);
        localStorage.setItem("userId", userEmail);
        localStorage.setItem("sessionId", sessionId);
-        dispatch(updateCurrYearAndMonth(response.userId));
         dispatch(fetchData(response.userId));
-         dispatch(loadingActions.setLoading(false));
+        dispatch(loadingActions.setLoading(false));
         navigate("/dashboard");
         toast({
           title: "Logged in Successfully",

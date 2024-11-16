@@ -1,5 +1,5 @@
 
-import { account, functions } from "../appwrite/appwrite-config";
+import { account } from "../appwrite/appwrite-config";
 import { loadingActions } from "./loading-slice";
 
 
@@ -27,20 +27,5 @@ export function logout(sessionId, userId) {
   };
 }
 
-export function updateCurrYearAndMonth(userId) {
-  return function () {
-    const promise = functions.createExecution(
-      import.meta.env.VITE_FUNCTION_UPDATE_YEAR_AND_MONTH_ID,
-      JSON.stringify({
-        userId: userId,
-      })
-    );
-
-    promise.then(
-      (response) => {},
-      (error) => console.log(error)
-    );
-  };
-}
 
 

@@ -20,8 +20,8 @@ import EditExpenseButton from "./EditExpenseButton";
 import RemoveExpenseButton from "./RemoveExpenseButton";
 import Pagination from "./Pagination";
 import { updateFilteredExpenses } from "../../store/filter-slice";
-import { loadingActions } from "../../store/loading-slice";
 import InfoExpenseButton from "./InfoExpenseButton";
+import PropTypes from 'prop-types';
 
 function DropdownActions({ expense }) {
   return (
@@ -80,6 +80,13 @@ function ExpensesTable({ filteredExpenses, windowWidth, showAllColumns }) {
     );
   }
 
+  // Add PropTypes validation
+  ExpensesTable.propTypes = {
+    filteredExpenses: PropTypes.array.isRequired,
+    windowWidth: PropTypes.number.isRequired,
+    showAllColumns: PropTypes.bool.isRequired,
+  };
+
   return (
     <>
       <TableContainer
@@ -93,7 +100,7 @@ function ExpensesTable({ filteredExpenses, windowWidth, showAllColumns }) {
         <Table>
           <Thead>
             <Tr>
-              <Th textColor={"blue.500"}>EXPENSE NAME</Th>
+              <Th textColor={"blue.500"}>Transactions</Th>
               <Th textColor={"blue.500"}>AMOUNT (Rs.)</Th>
               <Th
                 textColor={"blue.500"}
@@ -112,7 +119,7 @@ function ExpensesTable({ filteredExpenses, windowWidth, showAllColumns }) {
             </Tr>
           </Thead>
           <Tbody>
-            {filteredExpenses?.map((expense) => (
+            {filteredExpenses.length > 0 &&filteredExpenses?.map((expense) => (
               <Tr key={expense.$id} _hover={{ bgColor: "dark" }}>
                 <Td>{expense.name}</Td>
                 <Td>{expense.amount}</Td>
@@ -133,13 +140,6 @@ function ExpensesTable({ filteredExpenses, windowWidth, showAllColumns }) {
               </Tr>
             ))}
           </Tbody>
-          {/* <Tfoot>
-          <Tr>
-            <Th>To convert</Th>
-            <Th>into</Th>
-            <Th isNumeric>multiply by</Th>
-          </Tr>
-        </Tfoot> */}
         </Table>
       </TableContainer>
       <Text

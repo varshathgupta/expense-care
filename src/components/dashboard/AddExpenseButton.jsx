@@ -15,34 +15,46 @@ import {
   useDisclosure,
   FormErrorMessage,
 } from "@chakra-ui/react";
-import {  useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { loadingActions } from "../../store/loading-slice";
 import { addExpense } from "../../store/data-actions";
-
-
 
 // Array of income categories that will be used to determine amountType
 const incomeCategories = ["receipts"];
 
 function AddExpenseButton(props) {
-  const { categoryName, setHover, categoryId, subCategories, type } = props;
+  const { categoryName, setHover, categoryId, subCategories, type, initialData } = props; // Added initialData prop
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [errors, setErrors] = useState({});
   const [formSubmitted, setFormSubmitted] = useState(false);
   const userEmail = localStorage.getItem("userEmail");
   const userId = localStorage.getItem("userId");
   const [expenseInputData, setExpenseInputData] = useState({
-    name: "",
-    amount: '',
-    description: "",
-    date: new Date().toISOString().split('T')[0],
+    name: initialData?.name || "", // Use initialData if available
+    amount: initialData?.amount || '',
+    description: initialData?.description || "",
+    date: initialData?.date || new Date().toISOString().split('T')[0],
     amountType: categoryName && incomeCategories.includes(categoryName.toLowerCase()) ? "income" : "expense"
   });
 
   const initialRef = useRef(null);
   const dispatch = useDispatch();
-  
+
+  useEffect(() => {
+    // Reset the form data when the modal opens
+    if (isOpen) {
+      setExpenseInputData({
+        name: initialData?.name || "",
+        amount: initialData?.amount || '',
+        description: initialData?.description || "",
+        date: initialData?.date || new Date().toISOString().split('T')[0],
+        amountType: categoryName && incomeCategories.includes(categoryName.toLowerCase()) ? "income" : "expense"
+      });
+      setErrors({});
+      setFormSubmitted(false);
+    }
+  }, [isOpen, initialData, categoryName]);
 
   function validateForm() {
     const newErrors = {};
@@ -72,8 +84,7 @@ function AddExpenseButton(props) {
     }
 
     dispatch(loadingActions.setLoading(true));
-   dispatch(addExpense(userEmail, categoryName?.toLowerCase(), expenseInputData, categoryName, userId, type));
-    // setExpenseInputData(initialState);
+    dispatch(addExpense(userEmail, categoryName?.toLowerCase(), expenseInputData, categoryName, userId, type));
     setFormSubmitted(false);
     onClose();
     dispatch(loadingActions.setLoading(false));
@@ -96,7 +107,7 @@ function AddExpenseButton(props) {
           setHover(false);
         }}
       >
-        Add {type==="income" ? "income" : "expense"}
+        Add {type === "income" ? "income" : "expense"}
       </Button>
       <Modal
         initialFocusRef={initialRef}
@@ -106,12 +117,12 @@ function AddExpenseButton(props) {
       >
         <ModalOverlay />
         <ModalContent bgColor={"lightgray"}>
-          <ModalHeader>Add {type==="income" ? "Income" : "Expense"} to {categoryName}</ModalHeader>
+          <ModalHeader>Add {type === "income" ? "Income" : "Expense"} to {categoryName}</ModalHeader>
           <ModalCloseButton onClick={handleClose} />
           <form onSubmit={(e) => addExpenseHandler(e)}>
             <ModalBody pb={6}>
               <FormControl mb={2} isInvalid={formSubmitted && errors.name}>
-                <FormLabel ref={initialRef}>{type==="income" ? "Income" : "Expense"}</FormLabel>
+                <FormLabel ref={initialRef}>{type === "income" ? "Income" : "Expense"}</FormLabel>
                
                 <Select
                   id="expense"
@@ -123,7 +134,7 @@ function AddExpenseButton(props) {
                     }))
                   }
                 >
-                  <option value="" disabled>Select {type==="income" ? "an income" : "an expense"}</option>
+                  <option value="" disabled>Select {type === "income" ? "an income" : "an expense"}</option>
                   {subCategories?.map((expense, index) => (
                     <option key={index} value={expense}>{expense}</option>
                   ))}

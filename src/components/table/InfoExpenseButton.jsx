@@ -12,6 +12,7 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
+import PropTypes from 'prop-types';
 
 
 function InfoExpenseButton({ expense }) {
@@ -38,19 +39,19 @@ function InfoExpenseButton({ expense }) {
       >
         <ModalOverlay />
         <ModalContent bgColor={"lightgray"} border={"1px"}>
-          <ModalHeader textAlign={"center"}>{expense.name}</ModalHeader>
+          <ModalHeader textAlign={"center"}>{expense?.name}</ModalHeader>
           {/* <ModalCloseButton /> */}
 
           <ModalBody textAlign={"center"}>
             <Flex flexDir={"column"} gap={8}>
-              <Text>Amount: Rs. {expense.amount}</Text>
-              <Text>Created: {expense.date}</Text>
-              <Text>Category: {expense.category}</Text>
+              <Text>Amount: Rs. {expense?.amount}</Text>
+              <Text>Created: {expense?.date}</Text>
+              <Text>Category: {expense?.category}</Text>
               <Text>
                 Description:{" "}
-                {expense.description.length === 0
+                {expense?.description?.length === 0
                   ? "No description was given at the time of creation"
-                  : expense.description}
+                  : expense?.description}
               </Text>
             </Flex>
           </ModalBody>
@@ -64,5 +65,15 @@ function InfoExpenseButton({ expense }) {
     </>
   );
 }
+
+InfoExpenseButton.propTypes = {
+  expense: PropTypes.shape({
+    name: PropTypes.string,
+    amount: PropTypes.number,
+    date: PropTypes.string,
+    category: PropTypes.string,
+    description: PropTypes.string,
+  }).isRequired,
+};
 
 export default InfoExpenseButton;
