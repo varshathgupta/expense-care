@@ -231,7 +231,7 @@ function Filters({ setSearchElements, setShowAllColumns, showAllColumns }) {
         {/* Search Input and Button */}
         <Flex w={{ base: "90vw" }}>
           <Input
-            placeholder="Search Expense Name"
+            placeholder="Search transaction name"
             _placeholder={{ color: "whiteAlpha.700", textAlign: "center" }}
             w={{ base: "100%", md: "250px" }}
             rounded={"none"}

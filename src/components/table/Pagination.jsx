@@ -1,71 +1,79 @@
 import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
-import { Button, Flex } from "@chakra-ui/react";
-import React from "react";
+import { Button, Flex, Text } from "@chakra-ui/react";
+import PropTypes from 'prop-types'; // Import PropTypes for prop validation
 
-function Pagination({ currentPage, setCurrentPage, totalPages }) {
-  const pageNumbers = [];
-  for (let i = 1; i <= totalPages; i++) pageNumbers.push(i);
+const Pagination = ({ currentPage, setCurrentPage, totalPages }) => {
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+
+  const handlePrevClick = () => setCurrentPage((prev) => prev - 1);
+  const handleNextClick = () => setCurrentPage((prev) => prev + 1);
+  const handlePageClick = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <>
-      <Flex
-        w={"90vw"}
-        mx={"auto"}
-        justifyContent={"center"}
-        alignItems={"center"}
-        p={4}
-        gap={"1px"}
-        mb={"1rem"}
+    <Flex
+      w="90vw"
+      mx="auto"
+      justifyContent="center"
+      alignItems="center"
+      p={4}
+      gap="1px"
+      mb="1rem"
+    >
+      <Button
+        h={12}
+        w={20}
+        bgColor="lightgray"
+        borderRadius={0}
+        mr="1rem"
+        cursor="pointer"
+        _hover={{ bgColor: "dark", border: "solid", borderColor: "white" }}
+        onClick={handlePrevClick}
+        isDisabled={currentPage === 1}
       >
+        <ArrowBackIcon /> Prev
+      </Button>
+      {pageNumbers.map((pageNumber) => (
         <Button
+          key={pageNumber}
           h={12}
-          w={"20"}
-          bgColor={"lightgray"}
-          borderRadius={0}
-          mr={"1rem"}
-          cursor={"pointer"}
+          w={12}
+          data-key={pageNumber}
+          bgColor={currentPage === pageNumber ? "dark" : "lightgray"}
+          border={currentPage === pageNumber ? "solid" : undefined}
+          borderColor={currentPage === pageNumber ? "blue.500" : undefined}
+          borderWidth={currentPage === pageNumber ? 1 : undefined}
+          borderRadius="none"
+          value={pageNumber}
           _hover={{ bgColor: "dark", border: "solid", borderColor: "white" }}
-          onClick={() => setCurrentPage((prev) => prev - 1)}
-          isDisabled={!(currentPage !== 1)}
+          onClick={() => handlePageClick(pageNumber)}
         >
-          <ArrowBackIcon /> Prev
+          {pageNumber}
         </Button>
-        {pageNumbers.map((pageNumber) => (
-          <Button
-            key={pageNumber}
-            h={12}
-            w={12}
-            data-key={pageNumber}
-            bgColor={currentPage === pageNumber ? "dark" : "lightgray"}
-            border={currentPage === pageNumber ? "solid" : undefined}
-            borderColor={currentPage === pageNumber ? "blue.500" : undefined}
-            borderWidth={currentPage === pageNumber ? 1 : undefined}
-            borderRadius={"none"}
-            value={pageNumber}
-            _hover={{ bgColor: "dark", border: "solid", borderColor: "white" }}
-            onClick={(e) => setCurrentPage(parseInt(e.target.value))}
-          >
-            {pageNumber}
-          </Button>
-        ))}
-        <Button
-          h={12}
-          w={"20"}
-          bgColor={"lightgray"}
-          // justifyContent={"center"}
-          // alignItems={"center"}
-          borderRadius={0}
-          ml={"1rem"}
-          cursor={"pointer"}
-          _hover={{ bgColor: "dark", border: "solid", borderColor: "white" }}
-          onClick={() => setCurrentPage((prev) => prev + 1)}
-          isDisabled={currentPage === totalPages}
-        >
-          Next <ArrowForwardIcon />
-        </Button>
-      </Flex>
-    </>
+      ))}
+      <Button
+        h={12}
+        w={20}
+        bgColor="lightgray"
+        borderRadius={0}
+        ml="1rem"
+        cursor="pointer"
+        _hover={{ bgColor: "dark", border: "solid", borderColor: "white" }}
+        onClick={handleNextClick}
+        isDisabled={currentPage === totalPages}
+      >
+        Next <ArrowForwardIcon />
+      </Button>
+      <Text ml={4} fontSize="lg">
+        Page {currentPage} of {totalPages}
+      </Text>
+    </Flex>
   );
-}
+};
+
+Pagination.propTypes = {
+  currentPage: PropTypes.number.isRequired,
+  setCurrentPage: PropTypes.func.isRequired,
+  totalPages: PropTypes.number.isRequired,
+};
 
 export default Pagination;

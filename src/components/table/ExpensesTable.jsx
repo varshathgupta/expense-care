@@ -1,4 +1,4 @@
-import  {  useState } from "react";
+import { useState } from "react";
 import {
   Flex,
   IconButton,
@@ -13,13 +13,12 @@ import {
   Th,
   Thead,
   Tr,
+  Select, // Import Select for user to choose expenses per page
 } from "@chakra-ui/react";
 import { MoreVertical } from "lucide-react";
-import { useSelector } from "react-redux";
 import EditExpenseButton from "./EditExpenseButton";
 import RemoveExpenseButton from "./RemoveExpenseButton";
 import Pagination from "./Pagination";
-import InfoExpenseButton from "./InfoExpenseButton";
 import PropTypes from 'prop-types';
 
 function DropdownActions({ expense }) {
@@ -36,7 +35,6 @@ function DropdownActions({ expense }) {
       <MenuList bgColor={"lightgray"}>
         <EditExpenseButton expense={expense} />
         <RemoveExpenseButton expense={expense} />
-        <InfoExpenseButton expense={expense} />
       </MenuList>
     </Menu>
   );
@@ -49,15 +47,15 @@ DropdownActions.propTypes = {
 
 function ExpensesTable({ filteredExpenses, showAllColumns }) {
   // For Pagination
-  const totalFilteredExpenses = useSelector(
-    (state) => state.filter.totalFilteredExpenses
-  );
+
   const [currentPage, setCurrentPage] = useState(1);
-  const expensesPerPage = 5;
-  const totalPages = Math.ceil(totalFilteredExpenses / 5);
- 
+  const [expensesPerPage, setExpensesPerPage] = useState(5); // Allow user to select expenses per page
+  const totalPages = Math.ceil(filteredExpenses.length / expensesPerPage);
 
-
+  // Calculate the index of the first and last expense on the current page
+  const indexOfLastExpense = currentPage * expensesPerPage;
+  const indexOfFirstExpense = indexOfLastExpense - expensesPerPage;
+  const currentExpenses = filteredExpenses.slice(indexOfFirstExpense, indexOfLastExpense);
 
   if (filteredExpenses.length === 0) {
     return (
@@ -77,12 +75,12 @@ function ExpensesTable({ filteredExpenses, showAllColumns }) {
   // Add PropTypes validation
   ExpensesTable.propTypes = {
     filteredExpenses: PropTypes.array.isRequired,
-    windowWidth: PropTypes.number.isRequired,
     showAllColumns: PropTypes.bool.isRequired,
   };
 
   return (
     <>
+    
       <TableContainer
         w={"90%"}
         mx={"auto"}
@@ -113,7 +111,7 @@ function ExpensesTable({ filteredExpenses, showAllColumns }) {
             </Tr>
           </Thead>
           <Tbody>
-            {filteredExpenses.length > 0 &&filteredExpenses?.map((expense) => (
+            {currentExpenses.map((expense) => (
               <Tr key={expense.$id} _hover={{ bgColor: "dark" }}>
                 <Td>{expense.name}</Td>
                 <Td>{expense.amount}</Td>
@@ -136,18 +134,28 @@ function ExpensesTable({ filteredExpenses, showAllColumns }) {
           </Tbody>
         </Table>
       </TableContainer>
-      <Text
-        fontStyle={"italic"}
-        textColor={"whiteAlpha.600"}
-        w={"90vw"}
-        mx={"auto"}
-      >
-        Showing{" "}
-        {currentPage === totalPages
-          ? totalFilteredExpenses - (currentPage - 1) * expensesPerPage
-          : expensesPerPage}{" "}
-        out of {totalFilteredExpenses} expenses
-      </Text>
+      
+      <Flex justifyContent="flex-start" mb={4} w="100%">
+        <Text
+          fontStyle={"italic"}
+          textColor={"whiteAlpha.600"}
+          mx={2} // Adjusted margin for better alignment
+        >
+          Showing{" "}
+          {currentExpenses.length} out of {filteredExpenses.length} expenses
+        </Text>
+        <Select
+          value={expensesPerPage}
+          onChange={(e) => setExpensesPerPage(Number(e.target.value))}
+          width="auto"
+          label="Select expenses per page"
+          ml={2} // Added margin-left for spacing
+        >
+          <option value={5}>5</option>
+          <option value={10}>10</option>
+          <option value={20}>20</option>
+        </Select>
+      </Flex>
       <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
