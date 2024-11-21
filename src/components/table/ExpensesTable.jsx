@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  {  useState } from "react";
 import {
   Flex,
   IconButton,
@@ -15,11 +15,10 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { MoreVertical } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import EditExpenseButton from "./EditExpenseButton";
 import RemoveExpenseButton from "./RemoveExpenseButton";
 import Pagination from "./Pagination";
-import { updateFilteredExpenses } from "../../store/filter-slice";
 import InfoExpenseButton from "./InfoExpenseButton";
 import PropTypes from 'prop-types';
 
@@ -43,27 +42,22 @@ function DropdownActions({ expense }) {
   );
 }
 
-function ExpensesTable({ filteredExpenses, windowWidth, showAllColumns }) {
+// Add PropTypes validation for DropdownActions
+DropdownActions.propTypes = {
+  expense: PropTypes.object.isRequired, // Ensure expense is an object and is required
+};
+
+function ExpensesTable({ filteredExpenses, showAllColumns }) {
   // For Pagination
   const totalFilteredExpenses = useSelector(
     (state) => state.filter.totalFilteredExpenses
   );
-  const filterInputs = useSelector((state) => state.filter.filterInputs);
-  const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
   const expensesPerPage = 5;
   const totalPages = Math.ceil(totalFilteredExpenses / 5);
-  const indexOfFirstExpense = currentPage * expensesPerPage - expensesPerPage;
+ 
 
-  useEffect(() => {
-    dispatch(
-      updateFilteredExpenses({
-        ...filterInputs,
-        limit: expensesPerPage,
-        offset: indexOfFirstExpense,
-      })
-    );
-  }, [currentPage]);
+
 
   if (filteredExpenses.length === 0) {
     return (

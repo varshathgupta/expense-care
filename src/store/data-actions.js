@@ -1,14 +1,9 @@
 import { ID, Query } from "appwrite";
 import { databases } from "../appwrite/appwrite-config";
 
-const actions = {
-  ON_ADD_EXPENSE: "ON_ADD_EXPENSE",
-  ON_REMOVE_EXPENSE: "ON_REMOVE_EXPENSE",
-  ON_EDIT_EXPENSE: "ON_EDIT_EXPENSE",
-};
-
 /* To fetch data after any changes in the database or to fetch data into state on login*/
 export async function fetchData() {
+  const categoriesList = [];
   try {
     // Fetch categories and expenses in parallel
     const [categories, expenses] = await Promise.all([
@@ -18,11 +13,11 @@ export async function fetchData() {
       ),
       databases.listDocuments(
         import.meta.env.VITE_DB_ID, 
-        import.meta.env.VITE_DB_EXPENSE_ID,
-        [Query.limit(5)]
+        import.meta.env.VITE_DB_EXPENSE_ID
       )
     ]);
-
+    categoriesList.push(...categories.documents.map(cat => cat.name)); // Use spread operator for cleaner code
+    localStorage.setItem("CategoryList", JSON.stringify(categoriesList)); // Store as JSON string
     return {
       expenses: expenses.documents,
       categories: categories.documents
@@ -33,6 +28,51 @@ export async function fetchData() {
     throw error; // Re-throw to allow error handling by caller
   }
 }
+
+/* To list expenses based on filtered items (category type, year, month, and name) */
+export async function listFilteredExpenses(categoryType = null, startDate = null, endDate = null, searchName = null, sortBy = null) {
+  try {
+    const filters = [];
+    const sortOptions = [];
+
+    if (categoryType) {
+      filters.push(Query.equal('categoryId', categoryType.toLowerCase())); // Corrected toLowercase() to toLowerCase()
+    }
+    if (startDate && endDate) {
+      const formattedStartDate = new Date(startDate.split('/').reverse().join('-')).toISOString();
+      const formattedEndDate = new Date(endDate.split('/').reverse().join('-')).toISOString();
+
+      filters.push(Query.greaterThanEqual('date', formattedStartDate));
+      filters.push(Query.lessThanEqual('date', formattedEndDate));
+    }
+    if (searchName) {
+      filters.push(Query.search('name', searchName));
+    }
+
+    if (filters.length === 0) {
+      console.warn("No filters applied, returning empty list.");
+      return []; // Handle no filters scenario
+    }
+
+    if (sortBy) {
+      sortOptions.push(sortBy.includes('Descending') ? Query.orderDesc(sortBy.replace('Descending', '')) : Query.orderAsc(sortBy.replace('Ascending', '')));
+    }
+console.log(sortOptions)
+    const expenses = await databases.listDocuments(
+      import.meta.env.VITE_DB_ID,
+      import.meta.env.VITE_DB_EXPENSE_ID,
+      filters,
+      sortOptions
+    );
+
+    return expenses.documents;
+
+  } catch (error) {
+    console.error("Error listing filtered expenses:", error);
+    throw error; 
+  }
+}
+
 
 /* To add a new category */
 export function addCategory(userId, userEmail, categoryData) {
@@ -83,21 +123,18 @@ export function editCategoryName(categoryId, newCategoryName) {
 
 /* To delete a category and all its related documents i.e. expenses and its reference in user collection */
 export function deleteCategory(userId, categoryId) {
-  return function (dispatch) {
+  return function () {
     const promise = databases.deleteDocument(
       import.meta.env.VITE_DB_ID,
       import.meta.env.VITE_DB_CATEGORY_ID,
       categoryId
     );
 
-    promise.then(
-      function () {
-        dispatch(updateUserTotalExpense(userId));
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
+    promise.then(() => {
+      console.log("Deleted");
+    }).catch((error) => {
+      console.log(error);
+    });
   };
 }
 
@@ -106,10 +143,8 @@ export function addExpense(
   userEmail,
   categoryId,
   expenseDetails,
-  categoryName,
-  userId
 ) {
-  return async function (dispatch) {
+  return async function () {
     try {
       const { amount, name, description, date, amountType } = expenseDetails;
       const expenseData = {
@@ -127,23 +162,15 @@ export function addExpense(
         ID.unique(),
         expenseData
       );
-
-      // dispatch(
-      //   updateCategoryTotalExpense(actions.ON_ADD_EXPENSE, {
-      //     userId,
-      //     categoryId,
-      //     amount,
-      //   })
-      // );
     } catch (error) {
       console.error("Error adding expense:", error);
     }
   };
 }
 
-/* To edit an expense details (aslo updates the corresponding category's totalAmount and fetches the updated data into the state) */
-export function editExpense(expenseId, expenseDetails, oldAmount) {
-  return function (dispatch) {
+/* To edit an expense details (also updates the corresponding category's totalAmount and fetches the updated data into the state) */
+export function editExpense(expenseId, expenseDetails) {
+  return function () {
     // updating the expense document
     const promise = databases.updateDocument(
       import.meta.env.VITE_DB_ID,
@@ -156,41 +183,19 @@ export function editExpense(expenseId, expenseDetails, oldAmount) {
 
     promise.then(
       (updatedExpenseDocument) => {
-        const categoryId = updatedExpenseDocument.category.$id;
-        const userId = updatedExpenseDocument.user.$id;
-        const amount = parseInt(expenseDetails?.amount);
-
-        const { year, month } = updatedExpenseDocument;
-        const [currYear, currMonth] = [
-          new Date().getFullYear(),
-          new Date().getMonth(),
-        ];
-        const updateYearAmount = year === currYear;
-        const updateMonthAmount = month === currMonth;
-
-        dispatch(
-          updateCategoryTotalExpense(actions.ON_EDIT_EXPENSE, {
-            userId,
-            categoryId,
-            amount,
-            oldAmount,
-            updateMonthAmount,
-            updateYearAmount,
-          })
-        );
+        // Handle successful update if needed
+        console.log("Expense updated successfully:", updatedExpenseDocument);
       },
       (error) => {
-        console.log(error);
+        console.error("Error updating expense:", error);
       }
     );
   };
 }
 
 /* To delete an expense (also fetches the updated data into the state) */
-export function removeExpense(expenseId, expenseDetails) {
-  return function (dispatch) {
-    const { year, month, categoryId, userId } = expenseDetails;
-    const amount = parseInt(expenseDetails?.amount);
+export function removeExpense(expenseId) {
+  return function () {
 
     // deleting an expense document
     const promise = databases.deleteDocument(
@@ -199,129 +204,10 @@ export function removeExpense(expenseId, expenseDetails) {
       expenseId
     );
 
-    promise.then(
-      () => {
-        const [currYear, currMonth] = [
-          new Date().getFullYear(),
-          new Date().getMonth(),
-        ];
-
-        const updateYearAmount = year === currYear;
-        const updateMonthAmount = month === currMonth;
-
-        dispatch(
-          updateCategoryTotalExpense(actions.ON_REMOVE_EXPENSE, {
-            userId,
-            categoryId,
-            amount,
-            updateYearAmount,
-            updateMonthAmount,
-          })
-        );
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  };
-}
-
-export function updateCategoryTotalExpense(action, data) {
-  return function (dispatch) {
-    const { categoryId } = data;
-
-    const promise = databases.getDocument(
-      import.meta.env.VITE_DB_ID,
-      import.meta.env.VITE_DB_CATEGORY_ID,
-      categoryId
-    );
-
-    promise.then((categoryDocument) => {
-      let [updatedCurrYearExpense, updatedCurrMonthExpense] = [
-        categoryDocument.currYearExpense,
-        categoryDocument.currMonthExpense,
-      ];
-
-      const { amount } = data;
-
-      if (action === actions.ON_ADD_EXPENSE) {
-        updatedCurrYearExpense += amount;
-        updatedCurrMonthExpense += amount;
-      } else if (action === actions.ON_EDIT_EXPENSE) {
-        const { oldAmount, updateMonthAmount, updateYearAmount } = data;
-
-        if (updateYearAmount) {
-          updatedCurrYearExpense += amount - oldAmount;
-
-          if (updateMonthAmount) {
-            updatedCurrMonthExpense += amount - oldAmount;
-          }
-        }
-      } else if (action === actions.ON_REMOVE_EXPENSE) {
-        const { updateYearAmount, updateMonthAmount } = data;
-        if (updateYearAmount) {
-          updatedCurrYearExpense -= amount;
-          if (updateMonthAmount) {
-            updatedCurrMonthExpense -= amount;
-          }
-        }
-      }
-
-      const promise = databases.updateDocument(
-        import.meta.env.VITE_DB_ID,
-        import.meta.env.VITE_DB_CATEGORY_ID,
-        categoryId,
-        {
-          currYearExpense: updatedCurrYearExpense,
-          currMonthExpense: updatedCurrMonthExpense,
-        }
-      );
-
-      promise.then(
-        () => {
-          const { userId } = data;
-          dispatch(updateUserTotalExpense(userId));
-        },
-        (error) => console.log(error)
-      );
-    });
-  };
-}
-
-export function updateUserTotalExpense(userId) {
-  return function (dispatch) {
-    const promise = databases.getDocument(
-      import.meta.env.VITE_DB_ID,
-      import.meta.env.VITE_DB_USER_ID,
-      userId
-    );
-
-    promise.then((userDocument) => {
-      const categories = userDocument?.categories;
-
-      let [updatedCurrYearExpense, updatedCurrMonthExpense] = [0, 0];
-
-      categories.forEach((category) => {
-        updatedCurrYearExpense += category.currYearExpense;
-        updatedCurrMonthExpense += category.currMonthExpense;
-      });
-
-      const promise = databases.updateDocument(
-        import.meta.env.VITE_DB_ID,
-        import.meta.env.VITE_DB_USER_ID,
-        userId,
-        {
-          currYearExpense: updatedCurrYearExpense,
-          currMonthExpense: updatedCurrMonthExpense,
-        }
-      );
-
-      promise.then(
-        () => {
-          dispatch(fetchData(userId));
-        },
-        (error) => console.log(error)
-      );
+    promise.then(() => {
+      console.log("Expense deleted successfully");
+    }).catch((error) => {
+      console.error("Error deleting expense:", error);
     });
   };
 }

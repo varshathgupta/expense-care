@@ -13,7 +13,7 @@ import {
   MenuItem,
   MenuList,
 } from "@chakra-ui/react";
-import { months, yearRange } from "../table/Filters";
+import {  yearRange } from "../table/Filters";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { loadingActions } from "../../store/loading-slice";
 
@@ -110,7 +110,7 @@ function ExpenseChartFilter() {
               >
                 {chartFilterInputs?.monthName || "Month"}
               </MenuButton>
-              <MenuList bgColor={"lightgray"}>
+              {/* <MenuList bgColor={"lightgray"}>
                 {months.map((month) => (
                   <MenuItem
                     _hover={{ bgColor: "blue.600" }}
@@ -129,7 +129,7 @@ function ExpenseChartFilter() {
                     {month.option}
                   </MenuItem>
                 ))}
-              </MenuList>
+              </MenuList> */}
             </Menu>
           </Flex>
 

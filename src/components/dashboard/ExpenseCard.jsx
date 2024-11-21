@@ -2,42 +2,16 @@ import PropTypes from 'prop-types'; // Import PropTypes for prop validation
 import { Card, CardBody, CardFooter, CardHeader, Text } from "@chakra-ui/react";
 import  { useState } from "react";
 import AddExpenseButton from "./AddExpenseButton";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  filterActions,
-  updateFilteredExpenses,
-} from "../../store/filter-slice";
-import { months } from "../table/Filters";
 import { useNavigate } from "react-router-dom";
 
 function ExpenseCard({ category, }) {
   const { name, total, id, subCategories, type, userId, userEmail } = category;
   const [hover, setHover] = useState(false);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const filterInputs = useSelector((state) => state.filter.filterInputs);
-  // const showYearlyExpenses = useSelector(
-  //   (state) => state.data.yearlyExpenseOnCard
-  // );
+
 
   function clickHandler() {
-    const [currYear, currMonth] = [
-      new Date().getFullYear(),
-      new Date().getMonth(),
-    ];
-    dispatch(
-      filterActions.setFilterInputs({
-        id,
-        categoryName: name,
-        sortBy: null,
-        sortByOption: null,
-        year: currYear,
-        month: currMonth,
-        monthName: months.find((month) => month.value === currMonth).option,
-      })
-    );
-
-    dispatch(updateFilteredExpenses(filterInputs));
+   
 
     navigate("/all-expenses");
   }

@@ -2,14 +2,14 @@ import { createSlice } from "@reduxjs/toolkit";
 import { account, databases } from "../appwrite/appwrite-config";
 import { Query } from "appwrite";
 import { loadingActions } from "./loading-slice";
-import { months } from "../components/table/Filters";
+// import { months } from "../components/table/Filters";
 
 const initialState = {
   data: [],
   year: new Date().getFullYear(),
   month: new Date().getMonth(),
-  monthName: months.find((month) => month.value === new Date().getMonth())
-    .option,
+  // monthName: months.find((month) => month.value === new Date().getMonth())
+  //   .option,
 };
 
 const chartDataSlice = createSlice({

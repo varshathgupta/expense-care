@@ -1,84 +1,22 @@
 import { ChevronDownIcon, ChevronUpIcon, SearchIcon } from "@chakra-ui/icons";
 import {
   Button,
-  Checkbox,
-  Container,
   Flex,
   FormControl,
-  FormLabel,
   IconButton,
   Input,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
-  Select,
-  Text,
-} from "@chakra-ui/react";
-import React, { useEffect, useRef, useState } from "react";
-// import { categories } from "../../pages/Dashboard";
+} from "@chakra-ui/react"; // Removed unused DatePicker import
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  filterActions,
-  updateFilteredExpenses,
-} from "../../store/filter-slice";
-import { SlidersHorizontal } from "lucide-react";
-import { fetchData } from "../../store/data-actions";
-import { account } from "../../appwrite/appwrite-config";
 import { loadingActions } from "../../store/loading-slice";
+import PropTypes from "prop-types"; // Import PropTypes for prop validation
 
-export const yearRange = [2023,2024];
-
-export const months = [
-  {
-    option: "January",
-    value: 0,
-  },
-  {
-    option: "February",
-    value: 1,
-  },
-  {
-    option: "March",
-    value: 2,
-  },
-  {
-    option: "April",
-    value: 3,
-  },
-  {
-    option: "May",
-    value: 4,
-  },
-  {
-    option: "June",
-    value: 5,
-  },
-  {
-    option: "July",
-    value: 6,
-  },
-  {
-    option: "August",
-    value: 7,
-  },
-  {
-    option: "September",
-    value: 8,
-  },
-  {
-    option: "October",
-    value: 9,
-  },
-  {
-    option: "November",
-    value: 10,
-  },
-  {
-    option: "December",
-    value: 11,
-  },
-];
+const currentYear = new Date().getFullYear();
+export const yearRange = [currentYear - 1, currentYear];
 
 const sortBy = [
   { value: "amountAscending", option: "Amount (Lowest first)" },
@@ -87,58 +25,44 @@ const sortBy = [
   { value: "dateDescending", option: "Date (Latest First)" },
 ];
 
-function Filters({
-  setFilteredExpenses,
-  windowWidth,
-  setShowAllColumns,
-  showAllColumns,
-}) {
+function Filters({ setSearchElements, setShowAllColumns, showAllColumns }) {
   const filters = useSelector((state) => state.filter.filterInputs);
   const dispatch = useDispatch();
   const [filtersVisibility, setFiltersVisibility] = useState(false);
-
   const [filterInputs, setFilterInputs] = useState(filters);
   const [searchInput, setSearchInput] = useState("");
-
-  // const categories = useSelector((state) => state.data.categories);
-
+  const categories = JSON.parse(localStorage.getItem("CategoryList")) || [];
   function searchHandler() {
-    dispatch(loadingActions.setLoading(true));
-    setFilteredExpenses((expenses) =>
-      expenses.filter((expense) => expense.name.includes(searchInput))
-    );
-    dispatch(loadingActions.setLoading(false));
+    setSearchElements({
+      search: searchInput,
+    });
   }
 
   function filterHandler() {
-    dispatch(loadingActions.setLoading(true));
-    dispatch(filterActions.setFilterInputs(filterInputs));
-    dispatch(updateFilteredExpenses(filterInputs));
-    dispatch(loadingActions.setLoading(false));
+    console.log(filterInputs);
+    setSearchElements({
+      categoryId: filterInputs.categoryId,
+      startDate: filterInputs.startDate,
+      endDate: filterInputs.endDate,
+    });
   }
 
   function resetHandler() {
     dispatch(loadingActions.setLoading(true));
     setSearchInput("");
-    dispatch(filterActions.resetFilterInputs());
-    // account.get().then(
-    //   (user) => {
-    //     dispatch(fetchData(user.$id));
-    //   },
-    //   (error) => console.log(error)
-    // );
+    setSearchElements({
+      categoryId: "",
+      startDate: "",
+      endDate: "",
+      search: "",
+    });
+    setFilterInputs(filters); // Reset filter inputs
     dispatch(loadingActions.setLoading(false));
   }
 
   function showAllColumnsHandler() {
     setShowAllColumns((prev) => !prev);
   }
-
-  useEffect(() => {
-    dispatch(loadingActions.setLoading(true));
-    setFilterInputs(filters);
-    dispatch(loadingActions.setLoading(false));
-  }, [filters]);
 
   return (
     <>
@@ -188,12 +112,12 @@ function Filters({
               {filterInputs.categoryName || "Category"}
             </MenuButton>
             <MenuList bgColor={"lightgray"}>
-              {/* {categories.map((category) => (
+              {categories.map((category) => (
                 <MenuItem
                   _hover={{ bgColor: "blue.600" }}
-                  key={category.id}
-                  data-key={category.id}
-                  value={category.name}
+                  key={category}
+                  data-key={category}
+                  value={category}
                   bgColor={"lightgray"}
                   onClick={(e) => {
                     setFilterInputs((prev) => ({
@@ -203,11 +127,36 @@ function Filters({
                     }));
                   }}
                 >
-                  {category.name}
+                  {category}
                 </MenuItem>
-              ))} */}
+              ))}
             </MenuList>
           </Menu>
+
+          <Flex gap={4}>
+            <Input
+              type="date"
+              placeholder="Start Date"
+              value={filterInputs.startDate}
+              onChange={(e) =>
+                setFilterInputs((prev) => ({
+                  ...prev,
+                  startDate: e.target.value,
+                }))
+              }
+            />
+            <Input
+              type="date"
+              placeholder="End Date"
+              value={filterInputs.endDate}
+              onChange={(e) =>
+                setFilterInputs((prev) => ({
+                  ...prev,
+                  endDate: e.target.value,
+                }))
+              }
+            />
+          </Flex>
 
           <Menu>
             <MenuButton
@@ -220,79 +169,6 @@ function Filters({
               _active={{ bgColor: "lightgray" }}
               as={Button}
               rightIcon={<ChevronDownIcon />}
-              // w={"max-content"}
-              w={"225px"}
-            >
-              {filterInputs.year || "Year"}
-            </MenuButton>
-            <MenuList bgColor={"lightgray"}>
-              {yearRange.map((year) => (
-                <MenuItem
-                  _hover={{ bgColor: "blue.600" }}
-                  key={year}
-                  value={year}
-                  bgColor={"lightgray"}
-                  onClick={(e) =>
-                    setFilterInputs((prev) => ({
-                      ...prev,
-                      year: e.target.value,
-                    }))
-                  }
-                >
-                  {year}
-                </MenuItem>
-              ))}
-            </MenuList>
-          </Menu>
-          <Menu>
-            <MenuButton
-              bgColor={"lightgray"}
-              _hover={{
-                border: "solid",
-                borderWidth: "1px",
-                borderColor: "text",
-              }}
-              _active={{ bgColor: "lightgray" }}
-              as={Button}
-              rightIcon={<ChevronDownIcon />}
-              // w={"max-content"}
-              w={"225px"}
-            >
-              {filterInputs.monthName || "Month"}
-            </MenuButton>
-            <MenuList bgColor={"lightgray"}>
-              {months.map((month) => (
-                <MenuItem
-                  _hover={{ bgColor: "blue.600" }}
-                  key={month.value}
-                  data-key={month.value}
-                  value={month.option}
-                  bgColor={"lightgray"}
-                  onClick={(e) =>
-                    setFilterInputs((prev) => ({
-                      ...prev,
-                      month: e.target.getAttribute("data-key"),
-                      monthName: e.target.value,
-                    }))
-                  }
-                >
-                  {month.option}
-                </MenuItem>
-              ))}
-            </MenuList>
-          </Menu>
-          <Menu>
-            <MenuButton
-              bgColor={"lightgray"}
-              _hover={{
-                border: "solid",
-                borderWidth: "1px",
-                borderColor: "text",
-              }}
-              _active={{ bgColor: "lightgray" }}
-              as={Button}
-              rightIcon={<ChevronDownIcon />}
-              // w={"max-content"}
               w={"225px"}
             >
               {filterInputs.sortByOption || "Sort By"}
@@ -382,7 +258,7 @@ function Filters({
         {/* Category and Date Checkbox */}
         <Flex justifyContent={"center"} gap={2} alignItems={"center"}>
           <Button
-            display={windowWidth < 768 ? "flex" : "none"}
+            display={"none"}
             bgColor={"lightgray"}
             _hover={{
               border: "solid",
@@ -411,9 +287,13 @@ function Filters({
         </Flex>
       </Flex>
     </>
-
-    // Columnfilter
   );
 }
+
+Filters.propTypes = {
+  setSearchElements: PropTypes.func.isRequired,
+  setShowAllColumns: PropTypes.func.isRequired,
+  showAllColumns: PropTypes.bool.isRequired,
+};
 
 export default Filters;
