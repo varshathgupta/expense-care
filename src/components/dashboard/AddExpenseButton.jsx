@@ -19,12 +19,13 @@ import { useRef, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { loadingActions } from "../../store/loading-slice";
 import { addExpense } from "../../store/data-actions";
+import PropTypes from "prop-types"; // Import PropTypes for prop validation
 
 // Array of income categories that will be used to determine amountType
 const incomeCategories = ["receipts"];
 
 function AddExpenseButton(props) {
-  const { categoryName, setHover, categoryId, subCategories, type, initialData } = props; // Added initialData prop
+  const { categoryName, setHover, subCategories, type, initialData } = props; // Added initialData prop
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [errors, setErrors] = useState({});
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -215,5 +216,19 @@ function AddExpenseButton(props) {
     </>
   );
 }
+
+AddExpenseButton.propTypes = {
+  categoryName: PropTypes.string.isRequired,
+  setHover: PropTypes.func.isRequired,
+  categoryId: PropTypes.string.isRequired,
+  subCategories: PropTypes.array.isRequired,
+  type: PropTypes.string.isRequired,
+  initialData: PropTypes.shape({
+    name: PropTypes.string,
+    amount: PropTypes.number,
+    description: PropTypes.string,
+    date: PropTypes.string,
+  }),
+};
 
 export default AddExpenseButton;

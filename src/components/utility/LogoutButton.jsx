@@ -9,7 +9,8 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { LogOutIcon } from "lucide-react";
-import React, { useRef } from "react";
+import { useRef } from "react";
+import PropTypes from 'prop-types'; // Import PropTypes for prop validation
 
 function LogoutButton({ logoutHandler }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -19,13 +20,12 @@ function LogoutButton({ logoutHandler }) {
     logoutHandler();
     onClose();
   }
+  
   return (
     <>
       <Button
         bgColor={"inherit"}
-        onClick={() => {
-          onOpen();
-        }}
+        onClick={onOpen}
         rightIcon={<LogOutIcon />}
         _hover={{ bgColor: "teal.400" }}
         _active={{ bgColor: "teal.400" }}
@@ -49,7 +49,7 @@ function LogoutButton({ logoutHandler }) {
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              Please Confirm, if you want to logout.
+              Please confirm if you want to logout.
             </AlertDialogBody>
 
             <AlertDialogFooter>
@@ -72,5 +72,9 @@ function LogoutButton({ logoutHandler }) {
     </>
   );
 }
+
+LogoutButton.propTypes = {
+  logoutHandler: PropTypes.func.isRequired, // Ensure logoutHandler is a required function
+};
 
 export default LogoutButton;

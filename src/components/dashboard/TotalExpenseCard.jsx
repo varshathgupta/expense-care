@@ -1,6 +1,6 @@
-import { ArrowForwardIcon, ArrowRightIcon } from "@chakra-ui/icons";
+import PropTypes from 'prop-types'; // Import PropTypes for prop validation
+import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { Button, Flex, Text } from "@chakra-ui/react";
-import React from "react";
 import { Link } from "react-router-dom";
 
 function TotalExpenseCard({ userCurrYearExpense, userCurrMonthExpense }) {
@@ -29,13 +29,17 @@ function TotalExpenseCard({ userCurrYearExpense, userCurrMonthExpense }) {
         to="/charts"
         rounded={"lg"}
         bgColor={"dark"}
-        // border={"1px"}
         _hover={{ border: "1px" }}
       >
-        Current Month's Charts
+        Current Month&apos;s Charts
       </Button>
     </Flex>
   );
 }
+
+TotalExpenseCard.propTypes = {
+  userCurrYearExpense: PropTypes.number.isRequired, // Added prop validation
+  userCurrMonthExpense: PropTypes.number.isRequired, // Added prop validation
+};
 
 export default TotalExpenseCard;
