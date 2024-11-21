@@ -50,6 +50,7 @@ function Filters({ setSearchElements, setShowAllColumns, showAllColumns }) {
       categoryId: filterInputs.categoryId,
       startDate: filterInputs.startDate,
       endDate: filterInputs.endDate,
+      sortBy: filterInputs.sortBy
     });
   }
 
@@ -61,6 +62,7 @@ function Filters({ setSearchElements, setShowAllColumns, showAllColumns }) {
       startDate: "",
       endDate: "",
       search: "",
+      sortBy: "",
     });
     setFilterInputs({
       categoryId: "",

@@ -4,8 +4,9 @@ import ExpensesTable from "../components/table/ExpensesTable";
 import Filters from "../components/table/Filters";
 import { fetchData, listFilteredExpenses } from "../store/data-actions";
 import { Flex, Text } from "@chakra-ui/react";
+import TransactionsPDF from "../components/table/TransactionsPDF";
 
-function AllExpenses() {
+function AllTransactions() {
   const [filteredExpenses, setFilteredExpenses] = useState([]);
   const [showAllColumns, setShowAllColumns] = useState(true);
   const [searchElements, setSearchElements] = useState({
@@ -13,6 +14,7 @@ function AllExpenses() {
     endDate: "",
     search: "",
     categoryId: "",
+    sortBy:''
   });
 
   useEffect(() => {
@@ -20,7 +22,8 @@ function AllExpenses() {
       !searchElements.startDate &&
       !searchElements.endDate &&
       !searchElements.categoryId &&
-      !searchElements.search
+      !searchElements.search &&
+      !searchElements.sortBy
     ) {
       fetchData()
         .then((data) => {
@@ -46,6 +49,18 @@ function AllExpenses() {
       fetchCategoryFilteredExpenses(searchElements.categoryId);
     }
   }, [searchElements.categoryId]);
+  useEffect(()=>{
+    if(searchElements.search){
+      console.log(searchElements.search)
+      fetchSearchFilteredExpenses(searchElements.search)
+    }
+    
+  },[searchElements.search])
+  useEffect(()=>{
+    if(searchElements.sortBy){
+      sortFilteredExpense(searchElements.sortBy)
+    }
+  },[searchElements.sortBy])
 
   // Fetch filtered expenses function
   const fetchDateFilteredExpenses = async (startDate, endDate) => {
@@ -64,6 +79,22 @@ function AllExpenses() {
       console.error("Error fetching filtered expenses:", error);
     }
   };
+  const fetchSearchFilteredExpenses= async(search)=>{
+    try {
+      const data = await listFilteredExpenses(null, null, null, search,);
+      setFilteredExpenses(data.length > 0 ? data : []); // Ensure fallback to an empty array
+    } catch (error) {
+      console.error("Error fetching filtered expenses:", error);
+    }
+  }
+  const sortFilteredExpense= async(sortBy)=>{
+    try {
+      const data = await listFilteredExpenses(null, null, null, null,sortBy);
+      setFilteredExpenses(data.length > 0 ? data : []); // Ensure fallback to an empty array
+    } catch (error) {
+      console.error("Error fetching filtered expenses:", error);
+    }
+  }
 
   return (
     <>
@@ -85,13 +116,17 @@ function AllExpenses() {
           <Text>Loading expenses...</Text>
         </Flex>
       ) : (
+        <>
+        <TransactionsPDF  filteredTransactions={filteredExpenses} />
         <ExpensesTable
           filteredExpenses={filteredExpenses}
           showAllColumns={showAllColumns}
         />
+        </>
+        
       )}
     </>
   );
 }
 
-export default AllExpenses;
+export default AllTransactions;

@@ -31,7 +31,8 @@ export async function fetchData() {
 }
 
 /* To list expenses based on filtered items (category type, year, month, and name) */
-export async function listFilteredExpenses(categoryType = null, startDate = null, endDate = null, searchName = null, sortBy = null) {
+export async function listFilteredExpenses(categoryType = null, startDate = null, endDate = null, search = null, sortBy = null) {
+
   try {
     const filters = [];
     const sortOptions = [];
@@ -46,25 +47,39 @@ export async function listFilteredExpenses(categoryType = null, startDate = null
       filters.push(Query.greaterThanEqual('date', formattedStartDate));
       filters.push(Query.lessThanEqual('date', formattedEndDate));
     }
-    if (searchName) {
-      filters.push(Query.search('name', searchName));
+    if (search) {
+      filters.push(Query.startsWith('name', search));
     }
-
-    if (filters.length === 0) {
-      console.warn("No filters applied, returning empty list.");
-      return []; // Handle no filters scenario
-    }
-
     if (sortBy) {
       sortOptions.push(sortBy.includes('Descending') ? Query.orderDesc(sortBy.replace('Descending', '')) : Query.orderAsc(sortBy.replace('Ascending', '')));
     }
-console.log(sortOptions)
-    const expenses = await databases.listDocuments(
-      import.meta.env.VITE_DB_ID,
-      import.meta.env.VITE_DB_EXPENSE_ID,
-      filters,
-      sortOptions
-    );
+    // if (filters.length === 0) {
+    //   console.warn("No filters applied, returning empty list.");
+    //   return []; // Handle no filters scenario
+    // }
+
+   
+
+    const expenses =    
+    (filters.length > 0 && sortOptions.length > 0)
+      ? await databases.listDocuments(
+          import.meta.env.VITE_DB_ID,
+          import.meta.env.VITE_DB_EXPENSE_ID,
+          filters,
+          sortOptions
+        )
+      : (filters.length === 0 && sortOptions.length > 0)
+      ? await databases.listDocuments(
+          import.meta.env.VITE_DB_ID,
+          import.meta.env.VITE_DB_EXPENSE_ID,
+          sortOptions
+        )
+      : await databases.listDocuments(
+          import.meta.env.VITE_DB_ID,
+          import.meta.env.VITE_DB_EXPENSE_ID,
+          filters
+        );
+  
 
     return expenses.documents;
 

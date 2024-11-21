@@ -3,7 +3,7 @@ import Root from "./pages/Root";
 import Dashboard from "./pages/Dashboard";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
-import AllExpenses from "./pages/AllExpenses";
+import AllTransactions from "./pages/AllTransactions";
 import Charts from "./pages/Charts";
 import Error from "./components/Error";
 import SignupVerification from "./pages/SignupVerification";
@@ -52,8 +52,8 @@ function App() {
           Component: Dashboard,
         },
         {
-          path: "all-expenses",
-          Component: AllExpenses,
+          path: "all-transactions",
+          Component: AllTransactions,
         },
         {
           path: "charts",

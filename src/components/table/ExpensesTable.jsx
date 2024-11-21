@@ -13,13 +13,14 @@ import {
   Th,
   Thead,
   Tr,
-  Select, // Import Select for user to choose expenses per page
+  Select, // Import Select for user to choose expenses per page 
 } from "@chakra-ui/react";
 import { MoreVertical } from "lucide-react";
 import EditExpenseButton from "./EditExpenseButton";
 import RemoveExpenseButton from "./RemoveExpenseButton";
 import Pagination from "./Pagination";
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'; // Import jsPDF
+
 
 function DropdownActions({ expense }) {
   return (
@@ -80,7 +81,6 @@ function ExpensesTable({ filteredExpenses, showAllColumns }) {
 
   return (
     <>
-    
       <TableContainer
         w={"90%"}
         mx={"auto"}
