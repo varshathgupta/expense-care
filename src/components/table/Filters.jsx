@@ -11,7 +11,7 @@ import {
   MenuList,
 } from "@chakra-ui/react"; // Removed unused DatePicker import
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { loadingActions } from "../../store/loading-slice";
 import PropTypes from "prop-types"; // Import PropTypes for prop validation
 
@@ -26,12 +26,19 @@ const sortBy = [
 ];
 
 function Filters({ setSearchElements, setShowAllColumns, showAllColumns }) {
-  const filters = useSelector((state) => state.filter.filterInputs);
   const dispatch = useDispatch();
   const [filtersVisibility, setFiltersVisibility] = useState(false);
-  const [filterInputs, setFilterInputs] = useState(filters);
+  const [filterInputs, setFilterInputs] = useState({
+    categoryId: "",
+    categoryName: "",
+    startDate: "",
+    endDate: "",
+    sortBy: "",
+    sortByOption: "",
+  });
   const [searchInput, setSearchInput] = useState("");
   const categories = JSON.parse(localStorage.getItem("CategoryList")) || [];
+  
   function searchHandler() {
     setSearchElements({
       search: searchInput,
@@ -39,7 +46,6 @@ function Filters({ setSearchElements, setShowAllColumns, showAllColumns }) {
   }
 
   function filterHandler() {
-    console.log(filterInputs);
     setSearchElements({
       categoryId: filterInputs.categoryId,
       startDate: filterInputs.startDate,
@@ -56,7 +62,14 @@ function Filters({ setSearchElements, setShowAllColumns, showAllColumns }) {
       endDate: "",
       search: "",
     });
-    setFilterInputs(filters); // Reset filter inputs
+    setFilterInputs({
+      categoryId: "",
+      categoryName: "",
+      startDate: "",
+      endDate: "",
+      sortBy: "",
+      sortByOption: "",
+    }); // Reset filter inputs
     dispatch(loadingActions.setLoading(false));
   }
 
@@ -123,7 +136,7 @@ function Filters({ setSearchElements, setShowAllColumns, showAllColumns }) {
                     setFilterInputs((prev) => ({
                       ...prev,
                       categoryId: e.target.getAttribute("data-key"),
-                      categoryName: e.target.value,
+                      categoryName: e.target.innerText, // Changed to innerText to get the correct value
                     }));
                   }}
                 >
@@ -185,7 +198,7 @@ function Filters({ setSearchElements, setShowAllColumns, showAllColumns }) {
                     setFilterInputs((prev) => ({
                       ...prev,
                       sortBy: e.target.getAttribute("data-key"),
-                      sortByOption: e.target.value,
+                      sortByOption: e.target.innerText, // Changed to innerText to get the correct value
                     }))
                   }
                 >

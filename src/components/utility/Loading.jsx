@@ -1,6 +1,6 @@
 import { Flex, Text } from "@chakra-ui/react";
-import React from "react";
 import { PropagateLoader } from "react-spinners";
+import PropTypes from 'prop-types'; // Import PropTypes for prop validation
 
 function Loading({ loading }) {
   return (
@@ -23,5 +23,9 @@ function Loading({ loading }) {
     </Flex>
   );
 }
+
+Loading.propTypes = {
+  loading: PropTypes.bool.isRequired, // Ensure loading is a boolean and is required
+};
 
 export default Loading;

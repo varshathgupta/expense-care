@@ -19,8 +19,8 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import React, { useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import  { useRef, useState } from "react";
+import { useDispatch,} from "react-redux";
 import { addCategory } from "../../store/data-actions";
 import { loadingActions } from "../../store/loading-slice";
 

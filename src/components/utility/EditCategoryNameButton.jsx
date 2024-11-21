@@ -11,12 +11,12 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Textarea,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { editCategoryName } from "../../store/data-actions";
+import PropTypes from 'prop-types'; // Import PropTypes for prop validation
 
 function EditCategoryNameButton({ hover, setHover, categoryName, categoryId }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -60,7 +60,7 @@ function EditCategoryNameButton({ hover, setHover, categoryName, categoryId }) {
         <ModalContent bgColor={"lightgray"}>
           <ModalHeader>Edit</ModalHeader>
           <ModalCloseButton />
-          <form onSubmit={(e) => editCategoryNameHandler(e)}>
+          <form onSubmit={editCategoryNameHandler}>
             <ModalBody pb={6}>
               <FormControl mb={2}>
                 <FormLabel ref={initialRef}>Category Name</FormLabel>
@@ -91,5 +91,12 @@ function EditCategoryNameButton({ hover, setHover, categoryName, categoryId }) {
     </>
   );
 }
+
+EditCategoryNameButton.propTypes = {
+  hover: PropTypes.bool.isRequired, // Ensure hover is a boolean and is required
+  setHover: PropTypes.func.isRequired, // Ensure setHover is a function and is required
+  categoryName: PropTypes.string.isRequired, // Ensure categoryName is a string and is required
+  categoryId: PropTypes.string.isRequired, // Ensure categoryId is a string and is required
+};
 
 export default EditCategoryNameButton;

@@ -1,4 +1,3 @@
-import { DeleteIcon } from "@chakra-ui/icons";
 import {
   AlertDialog,
   AlertDialogBody,
@@ -10,10 +9,11 @@ import {
   MenuItem,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteCategory, removeExpense } from "../../store/data-actions";
+import  { useRef } from "react";
+import { useDispatch } from "react-redux";
+import { removeExpense } from "../../store/data-actions";
 import { loadingActions } from "../../store/loading-slice";
+import PropTypes from 'prop-types'; // Import PropTypes for prop validation
 
 function RemoveExpenseButton({ expense }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -51,7 +51,7 @@ function RemoveExpenseButton({ expense }) {
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              Are you sure? You can't undo this action afterwards.
+              Are you sure? You can&apos;t undo this action afterwards.
             </AlertDialogBody>
 
             <AlertDialogFooter>
@@ -74,5 +74,9 @@ function RemoveExpenseButton({ expense }) {
     </>
   );
 }
+
+RemoveExpenseButton.propTypes = {
+  expense: PropTypes.object.isRequired, // Ensure expense is an object and is required
+};
 
 export default RemoveExpenseButton;

@@ -9,9 +9,10 @@ import {
   Button,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { useRef } from "react";
+import  { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteCategory } from "../../store/data-actions";
+import PropTypes from 'prop-types'; // Import PropTypes for prop validation
 
 function DeleteCategoryButton({ hover, setHover, categoryId }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -55,7 +56,7 @@ function DeleteCategoryButton({ hover, setHover, categoryId }) {
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              Are you sure? You can't undo this action afterwards.
+              Are you sure? You can&apos;t undo this action afterwards.
             </AlertDialogBody>
 
             <AlertDialogFooter>
@@ -78,5 +79,11 @@ function DeleteCategoryButton({ hover, setHover, categoryId }) {
     </>
   );
 }
+
+DeleteCategoryButton.propTypes = {
+  hover: PropTypes.bool.isRequired, // Added prop validation
+  setHover: PropTypes.func.isRequired, // Added prop validation
+  categoryId: PropTypes.string.isRequired, // Added prop validation
+};
 
 export default DeleteCategoryButton;
