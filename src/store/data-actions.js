@@ -1,6 +1,7 @@
 import { ID, Query } from "appwrite";
 import { databases } from "../appwrite/appwrite-config";
 
+
 /* To fetch data after any changes in the database or to fetch data into state on login*/
 export async function fetchData() {
   const categoriesList = [];
@@ -180,16 +181,7 @@ export function editExpense(expenseId, expenseDetails) {
         ...expenseDetails,
       }
     );
-
-    promise.then(
-      (updatedExpenseDocument) => {
-        // Handle successful update if needed
-        console.log("Expense updated successfully:", updatedExpenseDocument);
-      },
-      (error) => {
-        console.error("Error updating expense:", error);
-      }
-    );
+    return promise;
   };
 }
 

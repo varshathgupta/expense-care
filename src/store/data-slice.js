@@ -4,9 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const expenseInitialState = {
   categories: [],
   expenses: [],
-  // userCurrYearExpense: null,
-  // userCurrMonthExpense: null,
-};
+ };
 
 // Initial state for display preferences
 const displayInitialState = {
@@ -26,8 +24,6 @@ const expenseSlice = createSlice({
         ...state,
         categories: categories || [],
         expenses: expenses || [],
-        // userCurrYearExpense: currYearExpense || 0,
-        // userCurrMonthExpense: currMonthExpense || 0
       };
     }
   }
