@@ -47,26 +47,60 @@ function Dashboard() {
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
 
-    return expenseData.reduce((accumulator, expense) => {
-      const expenseDate = new Date(expense.date);
-      const isMatchingCategory = (categoryId === 'monthly' || categoryId === 'yearly') ? true : expense.categoryId.toLowerCase() === categoryId.toLowerCase();
-      const isYearlyMatch = isYearly && expenseDate.getFullYear() === currentYear;
-      const isMonthlyMatch = !isYearly && expenseDate.getMonth() === currentMonth;
+    if (categoryId === 'yearly' || categoryId === 'monthly') {
+        return expenseData.reduce(
+          (accumulator, expense) => {
+              const expenseDate = new Date(expense.date);
+              const isYearlyMatch = isYearly && expenseDate.getFullYear() === currentYear;
+              const isMonthlyMatch =
+                  !isYearly &&
+                  expenseDate.getMonth() === currentMonth &&
+                  expenseDate.getFullYear() === currentYear;
+      
+              if (isYearlyMatch || isMonthlyMatch) {
+                  if (expense.amountType === 'income') {
+                      accumulator.totalIncome += expense.amount || 0;
+                  } else if (expense.amountType === 'expense') {
+                      accumulator.totalExpense += expense.amount || 0;
+                  }
+      
+                  // Update balance dynamically
+                  accumulator.balance = accumulator.totalIncome - accumulator.totalExpense;
+              }
+      
+              return accumulator;
+          },
+          { totalIncome: 0, totalExpense: 0, balance: 0 } // Initialize totals
+      );
+      
+    }
 
-      // Adjusting the logic to ensure yearly calculation works correctly
-      return accumulator + (isMatchingCategory && (isYearly ? isYearlyMatch : isMonthlyMatch) ? (expense.amount || 0) : 0);
+    // Default behavior for other categories
+    return expenseData.reduce((accumulator, expense) => {
+        const expenseDate = new Date(expense.date);
+        const isMatchingCategory =
+            expense.categoryId.toLowerCase() === categoryId.toLowerCase();
+        const isYearlyMatch = isYearly && expenseDate.getFullYear() === currentYear;
+        const isMonthlyMatch =
+            !isYearly &&
+            expenseDate.getMonth() === currentMonth &&
+            expenseDate.getFullYear() === currentYear;
+
+        if (isMatchingCategory && (isYearlyMatch || isMonthlyMatch)) {
+            accumulator += expense.amount || 0;
+        }
+
+        return accumulator;
     }, 0);
-  }, [expenseData]);
-  
-  const userCurrYearExpense = calculateTotal('yearly', true);
-  const userCurrMonthExpense = calculateTotal('monthly', false);
+}, [expenseData]);
+
+
 
   return (
     <Flex flexDir="column" gap={2} w="100vw" justifyContent="center">
       <Header />
       <TotalExpenseCard
-        userCurrYearExpense={userCurrYearExpense}
-        userCurrMonthExpense={userCurrMonthExpense}
+       data={calculateTotal(showYearlyExpenses ? 'yearly' : 'monthly',showYearlyExpenses)}
       />
       <Text textColor="whiteAlpha.700" fontStyle="italic" textAlign="center" mt={2}>
         Cards are showing current {showYearlyExpenses ? "year's" : "month's"} expenses
