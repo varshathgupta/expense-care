@@ -1,6 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
 import {displayReducer, expenseReducer} from "./data-slice";
-import chartDataReducer from "./chart-data-slice";
 import loadingReducer from "./loading-slice";
 
 /*
@@ -14,7 +13,6 @@ const store = configureStore({
   reducer: {
     data: expenseReducer,
     displayPreferences: displayReducer,
-    chartData: chartDataReducer,
     loading: loadingReducer,
   },
 });
