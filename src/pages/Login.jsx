@@ -41,7 +41,6 @@ function Login() {
     const promise = account.createEmailSession(values.email, values.password);
     promise.then(
       (response) => {
-        console.log(response)
         const {  $id: sessionId, providerUid: userEmail } = response;
        localStorage.setItem("userEmail", userEmail);
        localStorage.setItem("userId", userEmail);
