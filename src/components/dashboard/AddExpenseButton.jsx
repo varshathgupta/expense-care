@@ -30,7 +30,6 @@ function AddExpenseButton(props) {
   const [errors, setErrors] = useState({});
   const [formSubmitted, setFormSubmitted] = useState(false);
   const userEmail = localStorage.getItem("userEmail");
-  const userId = localStorage.getItem("userId");
   const [expenseInputData, setExpenseInputData] = useState({
     name: initialData?.name || "", // Use initialData if available
     amount: initialData?.amount || '',
@@ -38,7 +37,6 @@ function AddExpenseButton(props) {
     date: initialData?.date || new Date().toISOString().split('T')[0],
     amountType: categoryName && incomeCategories.includes(categoryName.toLowerCase()) ? "income" : "expense"
   });
-
   const initialRef = useRef(null);
   const dispatch = useDispatch();
 
@@ -85,10 +83,13 @@ function AddExpenseButton(props) {
     }
 
     dispatch(loadingActions.setLoading(true));
-    dispatch(addExpense(userEmail, categoryName?.toLowerCase(), expenseInputData, categoryName, userId, type));
+    dispatch(addExpense(userEmail, categoryName?.toLowerCase(), expenseInputData,));
     setFormSubmitted(false);
     onClose();
     dispatch(loadingActions.setLoading(false));
+   setTimeout(()=>{
+    window.location.reload();
+   },[1000])
   }
 
   const handleClose = () => {

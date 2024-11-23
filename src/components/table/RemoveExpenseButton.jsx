@@ -25,6 +25,9 @@ function RemoveExpenseButton({ expense }) {
     dispatch(removeExpense(expense.$id, expense));
     onClose();
     dispatch(loadingActions.setLoading(false));
+    setTimeout(()=>{
+      window.location.reload();
+     },[1000])
   }
 
   return (

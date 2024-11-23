@@ -153,7 +153,7 @@ export function deleteCategory(userId, categoryId) {
 export function addExpense(
   userEmail,
   categoryId,
-  expenseDetails,
+ expenseDetails,
 ) {
   return async function () {
     try {

@@ -3,8 +3,9 @@ import Header from "../components/Header";
 import ExpensesTable from "../components/table/ExpensesTable";
 import Filters from "../components/table/Filters";
 import { fetchData, listFilteredExpenses } from "../store/data-actions";
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, Text, useToast } from "@chakra-ui/react";
 import TransactionsPDF from "../components/table/TransactionsPDF";
+import Loading from "../components/utility/Loading";
 
 function AllTransactions() {
   const [filteredExpenses, setFilteredExpenses] = useState([]);
@@ -16,6 +17,8 @@ function AllTransactions() {
     categoryId: "",
     sortBy:''
   });
+  const[loading,setLoading]=useState(false);
+  const toast = useToast();
 
   useEffect(() => {
     if (
@@ -25,12 +28,20 @@ function AllTransactions() {
       !searchElements.search &&
       !searchElements.sortBy
     ) {
+      setLoading(true)
       fetchData()
         .then((data) => {
           setFilteredExpenses(data.expenses);
+          setLoading(false)
         })
         .catch((error) => {
-          console.error("Error fetching initial expenses:", error);
+          toast({
+            title: "Error fetching initial expenses:",
+            description: error,
+            status: "error",
+            colorScheme: "red",
+          });
+          setLoading(false)
         });
     }
   }, [filteredExpenses.length, searchElements]);
@@ -64,42 +75,79 @@ function AllTransactions() {
 
   // Fetch filtered expenses function
   const fetchDateFilteredExpenses = async (startDate, endDate) => {
+    setLoading(true)
     try {
       const data = await listFilteredExpenses(null, startDate, endDate, null);
       setFilteredExpenses(data.length > 0 ? data : []); // Ensure fallback to an empty array
+      setLoading(false)
     } catch (error) {
-      console.error("Error fetching filtered expenses:", error);
+      toast({
+        title: "Error fetching filtered expenses:",
+        description: error,
+        status: "error",
+        colorScheme: "red",
+      });
+      setLoading(false)
     }
   };
   const fetchCategoryFilteredExpenses = async (categoryId) => {
+    setLoading(true)
     try {
       const data = await listFilteredExpenses(categoryId, null, null, null);
       setFilteredExpenses(data.length > 0 ? data : []); // Ensure fallback to an empty array
+      setLoading(false)
     } catch (error) {
-      console.error("Error fetching filtered expenses:", error);
+      toast({
+        title: "Error fetching filtered expenses:",
+        description: error,
+        status: "error",
+        colorScheme: "red",
+      });
+      setLoading(false)
     }
   };
   const fetchSearchFilteredExpenses= async(search)=>{
+    setLoading(true)
     try {
       const data = await listFilteredExpenses(null, null, null, search,);
       setFilteredExpenses(data.length > 0 ? data : []); // Ensure fallback to an empty array
+      setLoading(false)
     } catch (error) {
-      console.error("Error fetching filtered expenses:", error);
+      toast({
+        title: "Error fetching filtered expenses:",
+        description: error,
+        status: "error",
+        colorScheme: "red",
+      });
+      setLoading(false)
     }
   }
   const sortFilteredExpense= async(sortBy)=>{
+    setLoading(true)
     try {
       const data = await listFilteredExpenses(null, null, null, null,sortBy);
       setFilteredExpenses(data.length > 0 ? data : []); // Ensure fallback to an empty array
+      setLoading(false)
     } catch (error) {
-      console.error("Error fetching filtered expenses:", error);
+      toast({
+        title: "Error fetching filtered expenses:",
+        description: error,
+        status: "error",
+        colorScheme: "red",
+      });
+      setLoading(false)
     }
   }
 
   return (
     <>
       <Header />
-      <Filters
+      {
+        loading ?(
+          <Loading />
+        ):(
+          <>
+                    <Filters
         setSearchElements={setSearchElements}
         setShowAllColumns={setShowAllColumns}
         showAllColumns={showAllColumns}
@@ -113,7 +161,7 @@ function AllTransactions() {
           w={"90vw"}
           mx={"auto"}
         >
-          <Text>Loading expenses...</Text>
+          <Text>No Data</Text>
         </Flex>
       ) : (
         <>
@@ -125,6 +173,10 @@ function AllTransactions() {
         </>
         
       )}
+          </>
+        )
+      }
+
     </>
   );
 }

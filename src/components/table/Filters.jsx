@@ -78,6 +78,11 @@ function Filters({ setSearchElements, setShowAllColumns, showAllColumns }) {
   function showAllColumnsHandler() {
     setShowAllColumns((prev) => !prev);
   }
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      searchHandler();
+    }
+  };
 
   return (
     <>
@@ -260,6 +265,7 @@ function Filters({ setSearchElements, setShowAllColumns, showAllColumns }) {
             _active={{ bgColor: "lightgray" }}
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
           <IconButton
             colorScheme="pink"

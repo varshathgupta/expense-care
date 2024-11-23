@@ -18,12 +18,12 @@ function ExpenseCard({ category, }) {
 
   return (
     <Card
-      h={"180px"}
-      w={{ base: "300px", md: "300px" }}
+      h={"190px"}
+      w={{ base: "250px", md: "250px" }}
       bgColor={"blue.700"}
       textAlign={"center"}
       color={"text"}
-      p={1}
+      // p={1}
       variant={"elevated"}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
