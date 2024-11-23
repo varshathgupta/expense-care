@@ -6,11 +6,13 @@ import Loading from "../components/utility/Loading";
 function Root() {
  
   const isLoading = useSelector((state) => state.loading.isLoading);
+  const sessionId = localStorage.getItem('sessionId');
+  console.log(sessionId);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (!isLoggedIn) navigate("/login");
-  // }, []);
+  useEffect(() => {
+    if (sessionId === null) navigate("/login");
+  }, []);
 
   if (isLoading) return <Loading loading={isLoading} />;
 

@@ -16,7 +16,6 @@ import { useForm } from "react-hook-form";
 import { Link as RouteLink, useNavigate } from "react-router-dom";
 import { account } from "../appwrite/appwrite-config";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchData } from "../store/data-actions";
 import { loadingActions } from "../store/loading-slice";
 import Loading from "../components/utility/Loading";
 
@@ -48,7 +47,6 @@ function Login() {
        localStorage.setItem("userEmail", userEmail);
        localStorage.setItem("userId", userEmail);
        localStorage.setItem("sessionId", sessionId);
-        dispatch(fetchData(response.userId));
         dispatch(loadingActions.setLoading(false));
         navigate("/dashboard");
         toast({
