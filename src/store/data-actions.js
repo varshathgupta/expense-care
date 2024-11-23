@@ -53,11 +53,6 @@ export async function listFilteredExpenses(categoryType = null, startDate = null
     if (sortBy) {
       sortOptions.push(sortBy.includes('Descending') ? Query.orderDesc(sortBy.replace('Descending', '')) : Query.orderAsc(sortBy.replace('Ascending', '')));
     }
-    // if (filters.length === 0) {
-    //   console.warn("No filters applied, returning empty list.");
-    //   return []; // Handle no filters scenario
-    // }
-
    
 
     const expenses =    
