@@ -1,15 +1,18 @@
-import  { useEffect, useState } from "react";
-import { Box, Flex, Heading, Select } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { Box, Flex, Heading, Select, useToast } from "@chakra-ui/react";
 import { IncomeExpensePie } from "../components/charts/IncomeExpensePie";
 import BarChartByCategory from "../components/charts/BarChartByCategory";
 import LineChartTrends from "../components/charts/LineChartTrends";
 import Header from "../components/Header";
 import { databases } from "../appwrite/appwrite-config";
 import { Query } from "appwrite";
+import Loading from "../components/utility/Loading";
 
 export default function Charts() {
   const [viewType, setViewType] = useState("monthly");
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
   const now = new Date();
   const startOfMonth = new Date(
     now.getFullYear(),
@@ -50,6 +53,7 @@ export default function Charts() {
   }, [viewType]);
 
   async function fetchData() {
+    setLoading(true);
     try {
       const query = viewType === "monthly" ? currentMonthQuery : yearlyQuery;
 
@@ -59,9 +63,16 @@ export default function Charts() {
         query
       );
       setData(dat.documents);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
-      return [];
+      toast({
+        title: "No data available",
+        description: "Retry or contact admin",
+        status: "error",
+        colorScheme: "red",
+      });
+      setLoading(false);
     }
   }
 
@@ -79,34 +90,38 @@ export default function Charts() {
           <option value="yearly">Yearly</option>
         </Select>
       </Box>
+      {loading ? (
+        <Loading />
+      ) : (
+        <Flex
+          gap={2}
+          flexWrap="wrap"
+          alignItems={"center"}
+          justifyContent={"center"}
+        >
+          {/* Income vs Expense */}
+          <Box margin={"1rem"}>
+            <Heading as="h2" size="md" mb={2}>
+              Income vs Expense
+            </Heading>
+            <IncomeExpensePie data={data} />
+          </Box>
+          {/* Amount by Category */}
+          <Box margin={"1rem"}>
+            <Heading as="h2" size="md" mb={2} marginBottom={"1rem"}>
+              Amount by Category
+            </Heading>
+            <BarChartByCategory data={data} />
+          </Box>
+          <Box margin={"1rem"}>
+            <Heading as="h2" size="md" mb={2}>
+              Trends Over Time
+            </Heading>
+            <LineChartTrends data={data} />
+          </Box>
+        </Flex>
+      )}
 
-      <Flex
-        gap={2}
-        flexWrap="wrap"
-        alignItems={"center"}
-        justifyContent={"center"}
-      >
-        {/* Income vs Expense */}
-        <Box margin={"1rem"}>
-          <Heading as="h2" size="md" mb={2}>
-            Income vs Expense
-          </Heading>
-          <IncomeExpensePie data={data} />
-        </Box>
-        {/* Amount by Category */}
-        <Box margin={"1rem"}>
-          <Heading as="h2" size="md" mb={2} marginBottom={"1rem"}>
-            Amount by Category
-          </Heading>
-          <BarChartByCategory data={data} />
-        </Box>
-        <Box margin={"1rem"}>
-          <Heading as="h2" size="md" mb={2}>
-            Trends Over Time
-          </Heading>
-          <LineChartTrends data={data} />
-        </Box>
-      </Flex>
       {/* Trends Over Time */}
     </Flex>
   );

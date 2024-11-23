@@ -8,12 +8,10 @@ import {
   FormLabel,
   Heading,
   Input,
-  Link,
-  Text,
   useToast,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
-import { Link as RouteLink, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { account } from "../appwrite/appwrite-config";
 import { useDispatch, useSelector } from "react-redux";
 import { loadingActions } from "../store/loading-slice";
@@ -43,11 +41,12 @@ function Login() {
     const promise = account.createEmailSession(values.email, values.password);
     promise.then(
       (response) => {
+        console.log(response)
         const {  $id: sessionId, providerUid: userEmail } = response;
        localStorage.setItem("userEmail", userEmail);
        localStorage.setItem("userId", userEmail);
        localStorage.setItem("sessionId", sessionId);
-        dispatch(loadingActions.setLoading(false));
+      dispatch(loadingActions.setLoading(false));
         navigate("/dashboard");
         toast({
           title: "Logged in Successfully",
@@ -128,6 +127,7 @@ function Login() {
               <FormLabel htmlFor="password">Password</FormLabel>
               <Input
                 type="password"
+                placeholder="Enter password"
                 {...register("password", {
                   required: "password must not be empty",
                   minLength: "minimum password length must be eight",
@@ -144,33 +144,9 @@ function Login() {
             <Button colorScheme="pink" width={"full"} type="submit" my={2}>
               Login
             </Button>
-            <Text textAlign={"center"} fontSize={"large"}>
-              Forgot Passwword?{" "}
-              <Link
-                as={RouteLink}
-                to={"/forgot-password"}
-                color={"teal.400"}
-                fontWeight={"semibold"}
-              >
-                Reset
-              </Link>
-            </Text>
-            <Text textAlign={"center"}>Or</Text>
+           
 
-         
-            {/* Link to Signup */}
-
-            <Text textAlign={"center"} fontSize={"large"}>
-              Not a User?{" "}
-              <Link
-                as={RouteLink}
-                to={"/signup"}
-                color={"teal.400"}
-                fontWeight={"semibold"}
-              >
-                Signup
-              </Link>
-            </Text>
+           
           </Flex>
         </form>
       </Flex>
