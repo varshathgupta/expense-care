@@ -1,11 +1,70 @@
-import  { useRef } from "react";
+import  {  useRef, useState } from "react";
 import { Button } from "@chakra-ui/react";
 import generatePDF, { Resolution, Margin } from "react-to-pdf";
 import PropTypes from 'prop-types';
+import { listFilteredExpenses } from "../../store/data-actions";
 
 function TransactionsPDF({ filteredTransactions }) {
   const pdfRef = useRef();
+  const[openingBalance,setOpeningBalance]=useState(0)
 
+
+
+  const fetchPrevMonthFilteredExpenses = async () => {
+    try {
+      // Get the start date from localStorage and calculate new month dates
+      const searchItemStartDate = localStorage.getItem("filteredTransactions");
+      if (!searchItemStartDate) throw new Error("Start date not found in localStorage.");
+  
+      const { firstDay, lastDay } = calculatePrevMonthDates(searchItemStartDate);
+  
+      // Fetch previous month's filtered expenses
+      const prevMonthData = await listFilteredExpenses(null, firstDay, lastDay, null);
+  
+      if (prevMonthData.length) {
+        // Calculate totals for debit (expense) and credit (income)
+        const totals = calculateTotals(prevMonthData);
+        const netBalance = totals.totalCredit - totals.totalDebit;
+  
+        // Set the opening balance
+        setOpeningBalance(netBalance);
+      }
+    } catch (error) {
+      console.error("Error fetching previous month's expenses:", error);
+    }
+  };
+  
+  // Utility function to calculate the first and last day of the previous month
+  const calculatePrevMonthDates = (startDate) => {
+    const newMonthDate = new Date(startDate);
+    newMonthDate.setMonth(newMonthDate.getMonth() - 1);
+  
+    // First day of the new month
+    const firstDay = newMonthDate.toISOString().split("T")[0];
+  
+    // Last day of the new month
+    const lastDay = new Date(newMonthDate.getFullYear(), newMonthDate.getMonth() + 1, 0)
+      .toISOString()
+      .split("T")[0];
+  
+    return { firstDay, lastDay };
+  };
+  
+  // Utility function to calculate totals
+  const calculateTotals = (transactions) => {
+    return transactions.reduce(
+      (totals, transaction) => {
+        if (transaction.amountType === "expense") {
+          totals.totalDebit += transaction.amount;
+        } else if (transaction.amountType === "income") {
+          totals.totalCredit += transaction.amount;
+        }
+        return totals;
+      },
+      { totalDebit: 0, totalCredit: 0 }
+    );
+  };
+  
   const totalDebit = filteredTransactions.reduce(
     (acc, transaction) =>
       transaction.amountType === "expense" ? acc + transaction.amount : acc,
@@ -41,6 +100,7 @@ function TransactionsPDF({ filteredTransactions }) {
     },
   };
   const handleDownload = () => {
+    fetchPrevMonthFilteredExpenses()
     generatePDF(pdfRef, options);
   };
   TransactionsPDF.propTypes = {
@@ -72,8 +132,14 @@ function TransactionsPDF({ filteredTransactions }) {
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr>
+              <th style={{ border: "1px solid black", padding: "8px" }}>
+                  Date
+                </th>
                 <th style={{ border: "1px solid black", padding: "8px" }}>
                   Name
+                </th>
+                <th style={{ border: "1px solid black", padding: "8px" }}>
+                  Description
                 </th>
                 <th style={{ border: "1px solid black", padding: "8px" }}>
                   Credit Amount (Rs.)
@@ -81,16 +147,20 @@ function TransactionsPDF({ filteredTransactions }) {
                 <th style={{ border: "1px solid black", padding: "8px" }}>
                   Debit Amount (Rs.)
                 </th>
-                <th style={{ border: "1px solid black", padding: "8px" }}>
-                  Date
-                </th>
+              
               </tr>
             </thead>
             <tbody>
               {filteredTransactions.map((transaction) => (
                 <tr key={transaction.$id}>
+                   <td style={{ border: "1px solid black", padding: "8px" }}>
+                    {new Date(transaction.date).toLocaleDateString("en-GB")}
+                  </td>
                   <td style={{ border: "1px solid black", padding: "8px" }}>
                     {transaction.name}
+                  </td>
+                  <td style={{ border: "1px solid black", padding: "8px" }}>
+                    {transaction.description}
                   </td>
                   <td
                     style={{
@@ -114,9 +184,7 @@ function TransactionsPDF({ filteredTransactions }) {
                       ? transaction.amount
                       : 0}
                   </td>
-                  <td style={{ border: "1px solid black", padding: "8px" }}>
-                    {new Date(transaction.date).toLocaleDateString("en-GB")}
-                  </td>
+                 
                 </tr>
               ))}
               <tr>
@@ -129,6 +197,18 @@ function TransactionsPDF({ filteredTransactions }) {
                 >
                   Total
                 </td>
+                <td  style={{
+                    border: "1px solid black",
+                    padding: "8px",
+                    fontWeight: "bold",
+                    textAlign: "right",
+                  }}></td>
+                <td  style={{
+                    border: "1px solid black",
+                    padding: "8px",
+                    fontWeight: "bold",
+                    textAlign: "right",
+                  }}></td>
                 <td
                   style={{
                     border: "1px solid black",

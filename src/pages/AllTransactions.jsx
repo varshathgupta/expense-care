@@ -49,6 +49,7 @@ function AllTransactions() {
   // Fetch filtered expenses when search elements change
   useEffect(() => {
     if (searchElements.startDate && searchElements.endDate) {
+      localStorage.setItem('searchStartDate', searchElements.startDate)
       fetchDateFilteredExpenses(
         searchElements.startDate,
         searchElements.endDate

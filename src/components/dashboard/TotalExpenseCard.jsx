@@ -47,9 +47,5 @@ function TotalExpenseCard({ data }) {
   );
 }
 
-TotalExpenseCard.propTypes = {
-  userCurrYearExpense: PropTypes.number.isRequired, // Added prop validation
-  userCurrMonthExpense: PropTypes.number.isRequired, // Added prop validation
-};
 
 export default TotalExpenseCard;
