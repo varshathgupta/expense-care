@@ -2,19 +2,11 @@ import PropTypes from 'prop-types'; // Import PropTypes for prop validation
 import { Card, CardBody, CardFooter, CardHeader, Text } from "@chakra-ui/react";
 import  { useState } from "react";
 import AddExpenseButton from "./AddExpenseButton";
-import { useNavigate } from "react-router-dom";
 
 function ExpenseCard({ category, }) {
   const { name, total, id, subCategories, type, userId, userEmail } = category;
   const [hover, setHover] = useState(false);
-  const navigate = useNavigate();
 
-
-  function clickHandler() {
-   
-
-    navigate("/all-expenses");
-  }
 
   return (
     <Card
@@ -35,8 +27,6 @@ function ExpenseCard({ category, }) {
       <CardBody
         fontSize={"2xl"}
         fontWeight={"semibold"}
-        onClick={clickHandler}
-        cursor={"pointer"}
         style={{
           padding: '0px'
         }}

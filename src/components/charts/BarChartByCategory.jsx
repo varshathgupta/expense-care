@@ -9,14 +9,22 @@ export default function BarChartByCategory  ({ data }) {
     }, {})
   );
 
+  console.log(categoryTotals)
   return (
-    <BarChart width={400} height={300} data={categoryTotals}>
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="name" />
-      <YAxis />
-      <Tooltip />
-      <Legend />
-      <Bar dataKey="amount" fill="#82ca9d" />
-    </BarChart>
+    <BarChart width={500} height={400} data={categoryTotals}>
+    <CartesianGrid strokeDasharray="3 3" />
+    <XAxis 
+      dataKey="name" 
+      interval={0} // Ensures all labels are shown
+      tick={{ fontSize: 14 }} // Adjust font size if needed
+      angle={-15} // Rotates labels to avoid overlap
+      textAnchor="end" // Aligns rotated labels to the end
+    />
+    <YAxis />
+    <Tooltip />
+    <Legend />
+    <Bar dataKey="amount" fill="#82ca9d" />
+  </BarChart>
+  
   );
 };

@@ -146,10 +146,10 @@ async  function logoutHandler() {
               <NavLink
                 as={RouteLink}
                 _hover={{ textDecor: "none", fontWeight: "medium" }}
-                to={"/all-expenses"}
+                to={"/all-transactions"}
                 className={activeClassName}
               >
-                All Expenses
+                All Transactions
               </NavLink>
             </MenuItem>
             <MenuItem bgColor={"lightgray"} _hover={{ bgColor: "teal.500" }}>

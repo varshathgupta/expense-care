@@ -124,33 +124,67 @@ function Dashboard() {
           <Loading />
         ):(
           <Box>
-          <Grid templateColumns="repeat(3, 1fr)" gap={4}>
-            <Box>
-              <Text fontSize="2xl" padding={5} mb={4} color="whiteAlpha.900">Income Categories</Text>
-              <Flex flexWrap="wrap" gap={10} px={10} py={5}>
-                {
-                  categories.expense?.length ? categories.income?.map(category => (
-                    <ExpenseCard key={category.$id} category={{ ...category, total: calculateTotal(category.name, showYearlyExpenses) }} />
-                  )):(
-                    <Text color="whiteAlpha.700">No Income Categories</Text>
-                  )
-                }
-               
-              </Flex>
-            </Box>
-            <Box gridColumn="span 2">
-              <Text fontSize="2xl" padding={5} mb={4} color="whiteAlpha.900">Expense Categories</Text>
-              <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={20} px={10} py={5}>
-                {categories.expense?.length ? (
-                  categories.expense.map(category => (
-                    <ExpenseCard key={category.$id} category={{ ...category, total: calculateTotal(category.name, showYearlyExpenses) }} />
-                  ))
-                ) : (
-                  <Text color="whiteAlpha.700">No Expense Categories</Text>
-                )}
-              </Grid>
-            </Box>
-          </Grid>
+        <Grid 
+  templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} 
+  gap={4}
+>
+  {/* Income Categories */}
+  <Box>
+    <Text fontSize="2xl" padding={5} mb={4} color="whiteAlpha.900">
+      Income Categories
+    </Text>
+    <Flex 
+      flexWrap="wrap" 
+      gap={4} 
+      px={{ base: 5, md: 10 }} 
+      py={5}
+    >
+      {categories.income?.length ? (
+        categories.income.map(category => (
+          <ExpenseCard 
+            key={category.$id} 
+            category={{ 
+              ...category, 
+              total: calculateTotal(category.name, showYearlyExpenses) 
+            }} 
+          />
+        ))
+      ) : (
+        <Text color="whiteAlpha.700">No Income Categories</Text>
+      )}
+    </Flex>
+  </Box>
+
+  {/* Expense Categories */}
+  <Box 
+    gridColumn={{ base: "1 / -1", md: "span 2" }}
+  >
+    <Text fontSize="2xl" padding={5} mb={4} color="whiteAlpha.900">
+      Expense Categories
+    </Text>
+    <Grid 
+      templateColumns={{ base: "1fr", sm: "repeat(auto-fill, minmax(150px, 1fr))", md: "repeat(auto-fill, minmax(200px, 1fr))" }} 
+      gap={10} 
+      px={{ base: 5, md: 10 }} 
+      py={5}
+    >
+      {categories.expense?.length ? (
+        categories.expense.map(category => (
+          <ExpenseCard 
+            key={category.$id} 
+            category={{ 
+              ...category, 
+              total: calculateTotal(category.name, showYearlyExpenses) 
+            }} 
+          />
+        ))
+      ) : (
+        <Text color="whiteAlpha.700">No Expense Categories</Text>
+      )}
+    </Grid>
+  </Box>
+</Grid>
+
         </Box>
         )
       }
