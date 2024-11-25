@@ -32,10 +32,13 @@ function AddExpenseButton(props) {
   const userEmail = localStorage.getItem("userEmail");
   const [expenseInputData, setExpenseInputData] = useState({
     name: initialData?.name || "", // Use initialData if available
-    amount: initialData?.amount || '',
+    amount: initialData?.amount || "",
     description: initialData?.description || "",
-    date: initialData?.date || new Date().toISOString().split('T')[0],
-    amountType: categoryName && incomeCategories.includes(categoryName.toLowerCase()) ? "income" : "expense"
+    date: initialData?.date || new Date().toISOString().split("T")[0],
+    amountType:
+      categoryName && incomeCategories.includes(categoryName.toLowerCase())
+        ? "income"
+        : "expense",
   });
   const initialRef = useRef(null);
   const dispatch = useDispatch();
@@ -45,10 +48,13 @@ function AddExpenseButton(props) {
     if (isOpen) {
       setExpenseInputData({
         name: initialData?.name || "",
-        amount: initialData?.amount || '',
+        amount: initialData?.amount || "",
         description: initialData?.description || "",
-        date: initialData?.date || new Date().toISOString().split('T')[0],
-        amountType: categoryName && incomeCategories.includes(categoryName.toLowerCase()) ? "income" : "expense"
+        date: initialData?.date || new Date().toISOString().split("T")[0],
+        amountType:
+          categoryName && incomeCategories.includes(categoryName.toLowerCase())
+            ? "income"
+            : "expense",
       });
       setErrors({});
       setFormSubmitted(false);
@@ -77,26 +83,28 @@ function AddExpenseButton(props) {
     e.stopPropagation();
     e.preventDefault();
     setFormSubmitted(true);
-    
+
     if (!validateForm()) {
       return;
     }
 
     dispatch(loadingActions.setLoading(true));
-    dispatch(addExpense(userEmail, categoryName?.toLowerCase(), expenseInputData,));
+    dispatch(
+      addExpense(userEmail, categoryName?.toLowerCase(), expenseInputData)
+    );
     setFormSubmitted(false);
     onClose();
     dispatch(loadingActions.setLoading(false));
-   setTimeout(()=>{
-    window.location.reload();
-   },[1000])
+    setTimeout(() => {
+      window.location.reload();
+    }, [1000]);
   }
 
   const handleClose = () => {
     setFormSubmitted(false);
     setErrors({});
     onClose();
-  }
+  };
 
   return (
     <>
@@ -119,13 +127,17 @@ function AddExpenseButton(props) {
       >
         <ModalOverlay />
         <ModalContent bgColor={"lightgray"}>
-          <ModalHeader>Add {type === "income" ? "Income" : "Expense"} to {categoryName}</ModalHeader>
+          <ModalHeader>
+            Add {type === "income" ? "Income" : "Expense"} to {categoryName}
+          </ModalHeader>
           <ModalCloseButton onClick={handleClose} />
           <form onSubmit={(e) => addExpenseHandler(e)}>
             <ModalBody pb={6}>
               <FormControl mb={2} isInvalid={formSubmitted && errors.name}>
-                <FormLabel ref={initialRef}>{type === "income" ? "Income" : "Expense"}</FormLabel>
-               
+                <FormLabel ref={initialRef}>
+                  {type === "income" ? "Income" : "Expense"}
+                </FormLabel>
+
                 <Select
                   id="expense"
                   value={expenseInputData.name}
@@ -136,12 +148,23 @@ function AddExpenseButton(props) {
                     }))
                   }
                 >
-                  <option value="" disabled>Select {type === "income" ? "an income" : "an expense"}</option>
+                  <option value="" disabled>
+                    Select {type === "income" ? "an income" : "an expense"}
+                  </option>
                   {subCategories?.map((expense, index) => (
-                    <option key={index} value={expense}>{expense}</option>
+                    <option
+                      key={index}
+                      value={expense}
+                     style={{ color: "black",}}
+                    >
+                      {expense}
+                    </option>
                   ))}
                 </Select>
-                {formSubmitted && errors.name && <FormErrorMessage>{errors.name}</FormErrorMessage>}
+
+                {formSubmitted && errors.name && (
+                  <FormErrorMessage>{errors.name}</FormErrorMessage>
+                )}
               </FormControl>
               <FormControl mb={2} isInvalid={formSubmitted && errors.amount}>
                 <FormLabel>Amount</FormLabel>
@@ -154,24 +177,31 @@ function AddExpenseButton(props) {
                       setExpenseInputData((prev) => ({
                         ...prev,
                         amount: value,
-                      }))
+                      }));
                     }
                   }}
                   onKeyDown={(e) => {
-                    if (e.key === 'e' || e.key === 'E' || e.key === '+' || e.key === '-') {
+                    if (
+                      e.key === "e" ||
+                      e.key === "E" ||
+                      e.key === "+" ||
+                      e.key === "-"
+                    ) {
                       e.preventDefault();
                     }
                   }}
-                  placeholder={` ${String.fromCodePoint(0x20B9)}`}
+                  placeholder={` ${String.fromCodePoint(0x20b9)}`}
                 />
-                {formSubmitted && errors.amount && <FormErrorMessage>{errors.amount}</FormErrorMessage>}
+                {formSubmitted && errors.amount && (
+                  <FormErrorMessage>{errors.amount}</FormErrorMessage>
+                )}
               </FormControl>
               <FormControl mb={2} isInvalid={formSubmitted && errors.date}>
                 <FormLabel>Date</FormLabel>
                 <Input
                   type="date"
                   value={expenseInputData.date}
-                  max={new Date().toISOString().split('T')[0]}
+                  max={new Date().toISOString().split("T")[0]}
                   onChange={(e) =>
                     setExpenseInputData((prev) => ({
                       ...prev,
@@ -179,9 +209,14 @@ function AddExpenseButton(props) {
                     }))
                   }
                 />
-                {formSubmitted && errors.date && <FormErrorMessage>{errors.date}</FormErrorMessage>}
+                {formSubmitted && errors.date && (
+                  <FormErrorMessage>{errors.date}</FormErrorMessage>
+                )}
               </FormControl>
-              <FormControl mb={2} isInvalid={formSubmitted && errors.description}>
+              <FormControl
+                mb={2}
+                isInvalid={formSubmitted && errors.description}
+              >
                 <FormLabel>Description </FormLabel>
                 <Textarea
                   placeholder="Type description here"
@@ -193,7 +228,9 @@ function AddExpenseButton(props) {
                     }))
                   }
                 />
-                {formSubmitted && errors.description && <FormErrorMessage>{errors.description}</FormErrorMessage>}
+                {formSubmitted && errors.description && (
+                  <FormErrorMessage>{errors.description}</FormErrorMessage>
+                )}
               </FormControl>
             </ModalBody>
 

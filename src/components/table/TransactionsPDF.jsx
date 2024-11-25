@@ -116,6 +116,9 @@ const TransactionsPDF = ({ filteredTransactions }) => {
     rightAlign: {
       textAlign: "right",
     },
+    centerAlign:{
+      textAlign: "center",
+    },
     totalRow: {
       fontWeight: "bold",
     },
@@ -146,7 +149,7 @@ const TransactionsPDF = ({ filteredTransactions }) => {
             <tbody>
               <tr>
                 <td colSpan="3" style={{ ...styles.thTd, ...styles.totalRow }}>Opening Balance</td>
-                <td colSpan="2" style={{ ...styles.thTd, ...styles.totalRow, ...styles.rightAlign }}>
+                <td colSpan="2" style={{ ...styles.thTd, ...styles.totalRow, ...styles.centerAlign }}>
                   {openingBalance}
                 </td>
               </tr>
@@ -184,7 +187,7 @@ const TransactionsPDF = ({ filteredTransactions }) => {
               </tr>
               <tr>
                 <td colSpan="3" style={{ ...styles.thTd, ...styles.totalRow }}>Closing Balance</td>
-                <td colSpan="2" style={{ ...styles.thTd, ...styles.totalRow, ...styles.rightAlign }}>
+                <td colSpan="2" style={{ ...styles.thTd, ...styles.totalRow, ...styles.centerAlign }}>
                   {closingBalance}
                 </td>
               </tr>
