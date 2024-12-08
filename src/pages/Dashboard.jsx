@@ -32,6 +32,7 @@ function Dashboard() {
   const toast = useToast();
   const { isOpen, onToggle, onClose } = useDisclosure();
   const { isOpen: isOpenRight, onClose: onCloseRight } = useDisclosure();
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     
@@ -232,12 +233,16 @@ function Dashboard() {
       </Popover>
       )
     }
-     
-      <Popover placement="top-end" closeOnBlur closeOnEsc onClose={onCloseRight} isOpen={isOpenRight}>
+     {
+      !loading && userId?.includes('admin')&&(
+        <Popover placement="top-end" closeOnBlur closeOnEsc onClose={onCloseRight} isOpen={isOpenRight}>
         <PopoverTrigger>
           <AddCategoryButton />
         </PopoverTrigger>
       </Popover>
+      )
+     }
+      
     </Flex>
   );
 }

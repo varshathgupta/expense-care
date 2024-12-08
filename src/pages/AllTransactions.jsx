@@ -54,6 +54,8 @@ function AllTransactions() {
         searchElements.startDate,
         searchElements.endDate
       );
+    }else{
+      localStorage.removeItem('searchStartDate')
     }
   }, [searchElements.startDate, searchElements.endDate]);
   useEffect(() => {
@@ -63,7 +65,6 @@ function AllTransactions() {
   }, [searchElements.categoryId]);
   useEffect(()=>{
     if(searchElements.search){
-      console.log(searchElements.search)
       fetchSearchFilteredExpenses(searchElements.search)
     }
     

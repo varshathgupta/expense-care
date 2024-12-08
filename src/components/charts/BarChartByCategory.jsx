@@ -9,7 +9,6 @@ export default function BarChartByCategory  ({ data }) {
     }, {})
   );
 
-  console.log(categoryTotals)
   return (
     <BarChart width={500} height={400} data={categoryTotals}>
     <CartesianGrid strokeDasharray="3 3" />

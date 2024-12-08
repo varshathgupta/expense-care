@@ -7,7 +7,6 @@ export  function IncomeExpensePie  ({ data }) {
     { name: "Income", value: data.filter(d => d.amountType === "income").reduce((a, b) => a + b.amount, 0) },
     { name: "Expense", value: data.filter(d => d.amountType === "expense").reduce((a, b) => a + b.amount, 0) },
   ];
-console.log(transformedData);
   return (
     <PieChart width={200} height={300}>
       <Pie data={transformedData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100}>

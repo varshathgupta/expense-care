@@ -5,6 +5,8 @@ import { databases } from "../appwrite/appwrite-config";
 /* To fetch data after any changes in the database or to fetch data into state on login*/
 export async function fetchData() {
   const categoriesList = [];
+  const startOfYear = new Date(new Date().getFullYear(), 0, 1).toISOString(); // Start of the year
+  const endOfYear = new Date(new Date().getFullYear(), 11, 31, 23, 59, 59).toISOString(); // End of the year
   try {
     // Fetch categories and expenses in parallel
     const [categories, expenses] = await Promise.all([
@@ -14,7 +16,12 @@ export async function fetchData() {
       ),
       databases.listDocuments(
         import.meta.env.VITE_DB_ID, 
-        import.meta.env.VITE_DB_EXPENSE_ID
+        import.meta.env.VITE_DB_EXPENSE_ID,
+        [
+          Query.greaterThanEqual("date", startOfYear), // Filter dates >= startOfYear
+          Query.lessThanEqual("date", endOfYear),  
+          Query.limit(7000), 
+      ]
       )
     ]);
     categoriesList.push(...categories.documents.map(cat => cat.name)); // Use spread operator for cleaner code
@@ -36,7 +43,7 @@ export async function listFilteredExpenses(categoryType = null, startDate = null
   try {
     const filters = [];
     const sortOptions = [];
-
+filters.push( Query.limit(1000), )
     if (categoryType) {
       filters.push(Query.equal('categoryId', categoryType.toLowerCase())); // Corrected toLowercase() to toLowerCase()
     }
@@ -108,46 +115,7 @@ export function addCategory(userId, userEmail, categoryData) {
   };
 }
 
-/* To edit an existing category name */
-export function editCategoryName(categoryId, newCategoryName) {
-  return function (dispatch) {
-    const promise = databases.updateDocument(
-      import.meta.env.VITE_DB_ID,
-      import.meta.env.VITE_DB_CATEGORY_ID,
-      categoryId,
-      {
-        name: newCategoryName,
-      }
-    );
 
-    promise.then(
-      (updatedCategoryDocument) => {
-        const userId = updatedCategoryDocument.user.$id;
-        setTimeout(() => dispatch(fetchData(userId)), 3000);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  };
-}
-
-/* To delete a category and all its related documents i.e. expenses and its reference in user collection */
-export function deleteCategory(userId, categoryId) {
-  return function () {
-    const promise = databases.deleteDocument(
-      import.meta.env.VITE_DB_ID,
-      import.meta.env.VITE_DB_CATEGORY_ID,
-      categoryId
-    );
-
-    promise.then(() => {
-      console.log("Deleted");
-    }).catch((error) => {
-      console.log(error);
-    });
-  };
-}
 
 /* To add an expense to a particular category (also updates the totalAmount of that category and fetch the updated data into the state) */
 export function addExpense(

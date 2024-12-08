@@ -50,7 +50,7 @@ function ExpensesTable({ filteredExpenses, showAllColumns }) {
   // For Pagination
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [expensesPerPage, setExpensesPerPage] = useState(5); // Allow user to select expenses per page
+  const [expensesPerPage, setExpensesPerPage] = useState(10); // Allow user to select expenses per page
   const totalPages = Math.ceil(filteredExpenses.length / expensesPerPage);
 
   // Calculate the index of the first and last expense on the current page
@@ -151,9 +151,10 @@ function ExpensesTable({ filteredExpenses, showAllColumns }) {
           label="Select expenses per page"
           ml={2} // Added margin-left for spacing
         >
-          <option value={5}>5</option>
           <option value={10}>10</option>
           <option value={20}>20</option>
+          <option value={50}>20</option>
+          <option value={100}>30</option>
         </Select>
       </Flex>
       <Pagination

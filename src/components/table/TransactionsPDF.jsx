@@ -8,20 +8,23 @@ const TransactionsPDF = ({ filteredTransactions }) => {
   const pdfRef = useRef();
   const [openingBalance, setOpeningBalance] = useState(0);
   const [closingBalance, setClosingBalance] = useState(0);
+  const[loading,setLoading] = useState(false)
   const searchItemStartDate = localStorage.getItem("searchStartDate");
 
   // Utility to calculate previous month dates
   const calculatePrevMonthDates = (startDate) => {
     const newMonthDate = new Date(startDate);
     newMonthDate.setMonth(newMonthDate.getMonth() - 1);
-
-    const firstDay = newMonthDate.toISOString().split("T")[0];
-    const lastDay = new Date(newMonthDate.getFullYear(), newMonthDate.getMonth() + 1, 0)
-      .toISOString()
-      .split("T")[0];
-
+  
+    const firstDay = `${newMonthDate.getFullYear()}-${String(newMonthDate.getMonth() + 1).padStart(2, '0')}-01`;
+    const lastDayDate = new Date(newMonthDate.getFullYear(), newMonthDate.getMonth() + 1, 0);
+  
+    const lastDay = `${lastDayDate.getFullYear()}-${String(lastDayDate.getMonth() + 1).padStart(2, '0')}-${String(lastDayDate.getDate()).padStart(2, '0')}`;
+  
     return { firstDay, lastDay };
   };
+  
+  
 
   // Utility to calculate totals
   const calculateTotals = (transactions) => {
@@ -46,7 +49,6 @@ const TransactionsPDF = ({ filteredTransactions }) => {
 
       const { firstDay, lastDay } = calculatePrevMonthDates(searchItemStartDate);
       const prevMonthData = await listFilteredExpenses(null, firstDay, lastDay, null);
-
       if (prevMonthData.length) {
         const { totalDebit, totalCredit } = calculateTotals(prevMonthData);
         const netBalance = totalCredit - totalDebit;
@@ -58,7 +60,6 @@ const TransactionsPDF = ({ filteredTransactions }) => {
   };
 
   useEffect(() => {
-    console.log(searchItemStartDate)
     if(searchItemStartDate !== null && searchItemStartDate !== undefined) {
       fetchPrevMonthFilteredExpenses();
     }
@@ -87,7 +88,11 @@ const TransactionsPDF = ({ filteredTransactions }) => {
   };
 
   const handleDownload = () => {
+    setLoading(true)
     generatePDF(pdfRef, options);
+    setTimeout(()=>{
+      setLoading(false)
+    },[2000])
   };
   const sortedTransactions = [...filteredTransactions].sort(
     (a, b) => new Date(a.date) - new Date(b.date)
@@ -140,8 +145,8 @@ const TransactionsPDF = ({ filteredTransactions }) => {
             <thead>
               <tr>
                 <th style={styles.thTd}>Date</th>
-                <th style={styles.thTd}>Name</th>
-                <th style={styles.thTd}>Description</th>
+                <th style={styles.thTd}>Remarks</th>
+                <th style={styles.thTd}>Name & Description</th>
                 <th style={styles.thTd}>Credit Amount (Rs.)</th>
                 <th style={styles.thTd}>Debit Amount (Rs.)</th>
               </tr>
@@ -198,8 +203,8 @@ const TransactionsPDF = ({ filteredTransactions }) => {
 
       {/* Visible button for downloading PDF */}
       <div style={styles.buttonContainer}>
-        <Button colorScheme="pink" maxW="225px" px="2%" onClick={handleDownload}>
-          Download Summary
+        <Button colorScheme="pink" maxW="225px" px="2%" onClick={handleDownload} disabled={loading}>
+         {loading ? 'Loading': 'Download Summary'} 
         </Button>
       </div>
     </>
