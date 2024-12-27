@@ -112,8 +112,5 @@ We welcome contributions to enhance the functionality and usability of Expense C
 ## License
 Expense Care is licensed under the MIT License. See the LICENSE file for more details.
 
-## Contact
-For questions or support, please contact us at support@expensecare.com.
 
-![Contact Us Icon](https://via.placeholder.com/40) Example contact icon or image.
 
