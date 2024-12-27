@@ -1,17 +1,119 @@
 # Expense Care
 
-A web application to take care of chruch's expenses by keeping an eye on them in a simple way. The app solves a very real problem of keeping an account of your regular every day expenses and making it available to view in various formats, so that one can easily analyse their spendings.
+**Expense Care** is an enterprise application designed to help users calculate and manage their income and expenses efficiently. The application provides a user-friendly interface and powerful features for tracking financial data.
 
-The application has been built by keeping in mind, that accounting our everyday expenses will only be possible for most people, if adding an expense is a very quick and easy process. Hence the app requires minimum details when one adds any expense although optional description is always possible if required.
+## Features
 
-The application majorly requires the user to create categories and add expenses to them. Rest all will be taken care of. The application allows user to view the data in a table with various filters, so that user can look at the expenses of any period whenever he/she wants. The applications provide bar graph and pie chart visualisation to allow user to view the data in a more visual format, so one can quickly see and get an idea of their expenses at any point of time.
+### 1. Dashboard
+- Displays **total income**, **total expenses**, and **total savings** for both monthly and yearly periods.
+- Provides **category-wise totals** for income and expenses, allowing users to analyze spending habits.
+- Includes a toggle option to switch between **monthly** and **yearly** data views.
 
-Lastly every aspect of the application has been consciously kept simple and intuitive whether it is signing up, logging in, adding data, editing data, visualising data etc. so, that it can be used on a regular basis by anyone in general.
+ ![Dashboard](./public/readme-images/Dashboard.png)   dashboard section.
+ ![Add-income-and-expenses](./public/readme-images/Add_Income_or_Expense.png) Add income/expense section.
+ ![Add-Category](./public/readme-images/Add_category.png) Add income/expense category.
+
+### 2. All Transactions
+- Lists all transactions in a detailed view.
+- Includes advanced filtering options:
+  - **Search by keywords**
+  - **Filter by date**
+  - **Filter by category**
+- User can **edit and delete** transactions by clicking actions icon.
+- Generates a summary based on filtered results.
+- Provides the ability to generate a financial statement with **opening and closing balances** when filtering by dates.
+ ![Transactions Page](./public/readme-images/All_Transactions.png)
+ ![Summary Page](./public/readme-images/Transaction_Report.png)
+
+### 3. Charts
+- Displays visualizations of overall spending information, helping users understand their financial patterns at a glance.
+ ![Charts page](./public/readme-images/Charts.png) 
 
 ## Tech Stack
+- **React**: For building the user interface.
+- **Chakra UI**: For a responsive and visually appealing design.
+- **react-to-pdf**: For generating PDF statements and summaries.
+- **Recharts**: For rendering interactive and insightful charts.
+- **Appwrite**: For database and business logic.
 
-**Client:** React, React-Router, Redux, Chakra UI, recharts
+## Getting Started
 
-**Server:** Appwrite
+### Prerequisites
+Ensure you have the following installed:
+- Node.js (version 18 or above)
+- npm or yarn
 
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/varshathgupta/expense-care.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd expense-care
+   ```
+3. Install dependencies:
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+4. Create an **.env** file and replace your appwrite credentials on it.
+```
+VITE_ENDPOINT = "https://cloud.appwrite.io/v1"
+
+VITE_PROJECT_ID = "Enter your project ID"
+
+VITE_DB_ID = "Enter your DB Id"
+
+VITE_DB_CATEGORY_ID = "Enter your category collection id"
+
+VITE_DB_EXPENSE_ID = "Enter your expense collection id"
+ ```
+### Running the Application
+1. Start the development server:
+   ```bash
+   npm run dev
+   # or
+   yarn run dev
+   ```
+2. Open your browser and navigate to `http://localhost:3000` to access the application.
+
+### Building for Production
+To create a production-ready build:
+```bash
+npm run build
+# or
+yarn build
+```
+
+## Usage
+- Navigate through the Dashboard, All Transactions, and Charts pages to explore and analyze your financial data.
+- Utilize the filtering and statement generation features to derive meaningful insights.
+- Export summaries and statements as PDFs for offline use.
+
+## Contribution
+We welcome contributions to enhance the functionality and usability of Expense Care. Please follow these steps:
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix:
+   ```bash
+   git checkout -b feature-name
+   ```
+3. Commit your changes:
+   ```bash
+   git commit -m "Add feature-name"
+   ```
+4. Push to your fork:
+   ```bash
+   git push origin feature-name
+   ```
+5. Create a pull request to the main repository.
+
+## License
+Expense Care is licensed under the MIT License. See the LICENSE file for more details.
+
+## Contact
+For questions or support, please contact us at support@expensecare.com.
+
+![Contact Us Icon](https://via.placeholder.com/40) Example contact icon or image.
 
