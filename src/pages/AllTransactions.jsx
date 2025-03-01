@@ -29,7 +29,7 @@ function AllTransactions() {
       !searchElements.sortBy
     ) {
       setLoading(true)
-      fetchData()
+      fetchData(new Date().getFullYear(), new Date().toLocaleString('default', { month: 'long' }))
         .then((data) => {
           setFilteredExpenses(data.expenses);
           setLoading(false)

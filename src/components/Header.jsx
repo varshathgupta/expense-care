@@ -63,7 +63,7 @@ async  function logoutHandler() {
        
         />
         </div>
-        <Text
+        {/* <Text
           fontSize={"md"}
           fontWeight={"bold"}
           color={"teal.400"}
@@ -71,9 +71,9 @@ async  function logoutHandler() {
           cursor={"pointer"}
           paddingLeft={'10px'}
         >
-         (chennai)
+         (kombai)
         </Text>
-       
+        */}
       </Flex>
       <Flex
         display={{ base: "none", md: "flex" }}

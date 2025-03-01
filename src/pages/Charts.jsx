@@ -28,26 +28,23 @@ export default function Charts() {
     59,
     999
   ).toISOString();
-  const startOfYear = new Date(now.getFullYear(), 0, 1).toISOString();
-  const endOfYear = new Date(
-    now.getFullYear(),
-    11,
-    31,
-    23,
-    59,
-    59,
-    999
-  ).toISOString();
+
   const currentMonthQuery = [
     Query.greaterThanEqual("date", startOfMonth),
     Query.lessThanEqual("date", endOfMonth),
   ];
 
+ 
+  function getCurrentFinancialYear() {
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
+    return currentMonth >= 3 ? `${currentYear}-${currentYear + 1}` : `${currentYear - 1}-${currentYear}`;
+  }
   const yearlyQuery = [
-    Query.greaterThanEqual("date", startOfYear),
-    Query.lessThanEqual("date", endOfYear),
+    Query.greaterThanEqual("date", new Date(Date.UTC(getCurrentFinancialYear().split('-')[0], 3, 1)).toISOString()),
+    Query.lessThanEqual("date", new Date(Date.UTC(getCurrentFinancialYear().split('-')[1], 2, 31, 23, 59, 59)).toISOString()),
   ];
-
   useEffect(() => {
     fetchData();
   }, [viewType]);
@@ -62,6 +59,7 @@ export default function Charts() {
         import.meta.env.VITE_DB_EXPENSE_ID,
         query
       );
+      console.log(dat);
       setData(dat.documents);
       setLoading(false);
     } catch (error) {

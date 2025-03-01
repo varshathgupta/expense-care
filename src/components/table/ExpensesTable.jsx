@@ -58,6 +58,9 @@ function ExpensesTable({ filteredExpenses, showAllColumns }) {
   const indexOfFirstExpense = indexOfLastExpense - expensesPerPage;
   const currentExpenses = filteredExpenses.slice(indexOfFirstExpense, indexOfLastExpense);
 
+  // For blocking Actions for visitor
+const userEmail = localStorage.getItem("userEmail");
+ const visitorAccess = userEmail ==="visitor@expsecare.com"
   if (filteredExpenses.length === 0) {
     return (
       <Flex
@@ -85,12 +88,14 @@ function ExpensesTable({ filteredExpenses, showAllColumns }) {
         w={"90%"}
         mx={"auto"}
         bgColor={"lightgray"}
-        p={"2rem"}
+        p={"1rem"}
         rounded={"lg"}
         mb={"2rem"}
+        h={"350px"}
+        overflowY={"auto"}
       >
         <Table>
-          <Thead>
+          <Thead position="sticky" top={0} bgColor={"lightgray"} zIndex={1}>
             <Tr>
               <Th textColor={"blue.500"}>Transactions</Th>
               <Th textColor={"blue.500"}>AMOUNT (Rs.)</Th>
@@ -107,7 +112,7 @@ function ExpensesTable({ filteredExpenses, showAllColumns }) {
                 DATE
               </Th>
               <Th textColor={"blue.500"}>DESCRIPTION</Th>
-              <Th textColor={"blue.500"}>Actions</Th>
+              { !visitorAccess && <Th textColor={"blue.500"}>Actions</Th>}
             </Tr>
           </Thead>
           <Tbody>
@@ -126,9 +131,11 @@ function ExpensesTable({ filteredExpenses, showAllColumns }) {
                   })}
                 </Td>
                 <Td>{expense.description}</Td>
-                <Td>
+                {
+                  !visitorAccess && <Td>
                   <DropdownActions expense={expense} />
-                </Td>
+                  </Td>
+                }
               </Tr>
             ))}
           </Tbody>
@@ -153,8 +160,8 @@ function ExpensesTable({ filteredExpenses, showAllColumns }) {
         >
           <option value={10}>10</option>
           <option value={20}>20</option>
-          <option value={50}>20</option>
-          <option value={100}>30</option>
+          <option value={50}>50</option>
+          <option value={100}>100</option>
         </Select>
       </Flex>
       <Pagination

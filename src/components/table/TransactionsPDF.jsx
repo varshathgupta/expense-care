@@ -12,18 +12,26 @@ const TransactionsPDF = ({ filteredTransactions }) => {
   const searchItemStartDate = localStorage.getItem("searchStartDate");
 
   // Utility to calculate previous month dates
-  const calculatePrevMonthDates = (startDate) => {
-    const newMonthDate = new Date(startDate);
-    newMonthDate.setMonth(newMonthDate.getMonth() - 1);
-  
-    const firstDay = `${newMonthDate.getFullYear()}-${String(newMonthDate.getMonth() + 1).padStart(2, '0')}-01`;
-    const lastDayDate = new Date(newMonthDate.getFullYear(), newMonthDate.getMonth() + 1, 0);
-  
-    const lastDay = `${lastDayDate.getFullYear()}-${String(lastDayDate.getMonth() + 1).padStart(2, '0')}-${String(lastDayDate.getDate()).padStart(2, '0')}`;
-  
-    return { firstDay, lastDay };
-  };
-  
+  function getFinancialYearDates(startDate) {
+    const date = new Date(startDate);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1; // JS months are 0-based
+
+    let firstYear = month >= 4 ? year : year - 1;
+    let firstDay = new Date(firstYear, 3, 1); // April 1st of the financial year
+
+    let lastDay;
+    if (month === 4) {
+        lastDay = new Date(firstYear, 3, 30); // April 30th of the same year
+    } else {
+        lastDay = new Date(date.getFullYear(), date.getMonth(), 0); // Last day of the previous month
+    }
+
+    return {
+        firstDay: `${firstDay.getFullYear()}-${(firstDay.getMonth() + 1).toString().padStart(2, '0')}-01`,
+        lastDay: `${lastDay.getFullYear()}-${(lastDay.getMonth() + 1).toString().padStart(2, '0')}-${lastDay.getDate()}`
+    };
+}
   
 
   // Utility to calculate totals
@@ -46,13 +54,17 @@ const TransactionsPDF = ({ filteredTransactions }) => {
     try {
     
       if (!searchItemStartDate) throw new Error("Start date not found in localStorage.");
-
-      const { firstDay, lastDay } = calculatePrevMonthDates(searchItemStartDate);
-      const prevMonthData = await listFilteredExpenses(null, firstDay, lastDay, null);
-      if (prevMonthData.length) {
-        const { totalDebit, totalCredit } = calculateTotals(prevMonthData);
-        const netBalance = totalCredit - totalDebit;
-        setOpeningBalance(netBalance);
+      if(searchItemStartDate.includes('04-01') ) {
+        setOpeningBalance(0);
+        return;
+      }else{
+        const { firstDay, lastDay } = getFinancialYearDates(searchItemStartDate);
+        const prevMonthData = await listFilteredExpenses(null, firstDay, lastDay, null);
+        if (prevMonthData.length) {
+          const { totalDebit, totalCredit } = calculateTotals(prevMonthData);
+          const netBalance = totalCredit - totalDebit;
+          setOpeningBalance(netBalance);
+        }
       }
     } catch (error) {
       console.error("Error fetching previous month's expenses:", error);
@@ -80,29 +92,32 @@ const TransactionsPDF = ({ filteredTransactions }) => {
     resolution: Resolution.HIGH,
     filename: getFileName(),
     page: { margin: Margin.LARGE },
-    canvas: { qualityRatio: 1 },
+    canvas: { qualityRatio: 1, useCORS: true }, // Ensure CORS images load
     overrides: {
       pdf: { compress: true },
       canvas: { useCORS: true },
     },
   };
+  
 
   const handleDownload = () => {
     setLoading(true)
     generatePDF(pdfRef, options);
     setTimeout(()=>{
       setLoading(false)
-    },[2000])
+    },[12000])
   };
   const sortedTransactions = [...filteredTransactions].sort(
     (a, b) => new Date(a.date) - new Date(b.date)
   );
+
   // Styles
   const styles = {
     pdfContainer: {
-      position: "absolute",
-      top: "-10000px",
-      left: "-10000px",
+      position: 'absolute',
+      top: '-10000px',
+      left: '-10000px',
+      // Ensures text appears
     },
     header: {
       textAlign: "center",

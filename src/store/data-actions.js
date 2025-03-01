@@ -2,11 +2,33 @@ import { ID, Query } from "appwrite";
 import { databases } from "../appwrite/appwrite-config";
 
 
-/* To fetch data after any changes in the database or to fetch data into state on login*/
-export async function fetchData() {
+export async function fetchData(year, month) {
   const categoriesList = [];
-  const startOfYear = new Date(new Date().getFullYear(), 0, 1).toISOString(); // Start of the year
-  const endOfYear = new Date(new Date().getFullYear(), 11, 31, 23, 59, 59).toISOString(); // End of the year
+  let startDate, endDate;
+  const monthNames = {
+    January: 1, February: 2, March: 3, April: 4, May: 5, June: 6,
+    July: 7, August: 8, September: 9, October: 10, November: 11, December: 12
+};
+
+if ( year < 1970 || year > 9999) {
+    throw new Error("Invalid year value");
+}
+
+if (month !== undefined && month !== null) {
+    if (typeof month === 'string') {
+        month = monthNames[month];
+    }
+    if (typeof month !== 'number' || month < 1 || month > 12) {
+        throw new Error("Invalid month value");
+    }
+}
+if ((month === undefined || month === null)&& typeof year !== 'number') {
+  startDate = new Date(Date.UTC(year.split('-')[0], 3, 1)); // Start of the financial year (April 1, 2024)
+  endDate = new Date(Date.UTC(year.split('-')[1], 2, 31, 23, 59, 59)); // End of the financial year (March 31, 2025)
+} else {
+  startDate = new Date(Date.UTC(year, month - 1, 1)); // Start of the month in UTC to avoid timezone issues
+  endDate = new Date(Date.UTC(year, month, 0, 23, 59, 59)); // Last day of the month (23:59:59 UTC)
+}
   try {
     // Fetch categories and expenses in parallel
     const [categories, expenses] = await Promise.all([
@@ -18,10 +40,10 @@ export async function fetchData() {
         import.meta.env.VITE_DB_ID, 
         import.meta.env.VITE_DB_EXPENSE_ID,
         [
-          Query.greaterThanEqual("date", startOfYear), // Filter dates >= startOfYear
-          Query.lessThanEqual("date", endOfYear),  
+          Query.greaterThanEqual("date", startDate.toISOString()), // Filter dates >= startDate
+          Query.lessThanEqual("date", endDate.toISOString()),  
           Query.limit(7000), 
-      ]
+        ]
       )
     ]);
     categoriesList.push(...categories.documents.map(cat => cat.name)); // Use spread operator for cleaner code
@@ -33,7 +55,7 @@ export async function fetchData() {
 
   } catch (error) {
     console.error("Error fetching data:", error);
-    throw error; // Re-throw to allow error handling by caller
+    throw error; 
   }
 }
 
