@@ -74,6 +74,7 @@ function Dashboard() {
     if (categoryId === 'yearly' || categoryId === 'monthly') {
         return expenseData.reduce(
           (accumulator, expense) => {
+            console.log("Expense: ", expense);
             if (expense.amountType === 'income') {
               accumulator.totalIncome += expense.amount || 0;
           } else if (expense.amountType === 'expense') {
@@ -135,16 +136,16 @@ function getPreviousFinancialYear () {
         ):(
           <Box>
         <Grid 
-  templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} 
-  gap={4}
+  templateColumns={{ base: "1fr", md: "1fr 1fr" }} 
+  gap={6}
 >
   {/* Income Categories */}
   <Box>
     <Text fontSize="2xl" padding={5} mb={4} color="whiteAlpha.900">
       Income Categories
     </Text>
-    <Flex 
-      flexWrap="wrap" 
+    <Grid 
+      templateColumns={{ base: "1fr 1fr 1fr"  }} 
       gap={4} 
       px={{ base: 5, md: 10 }} 
       py={5}
@@ -162,19 +163,18 @@ function getPreviousFinancialYear () {
       ) : (
         <Text color="whiteAlpha.700">No Income Categories</Text>
       )}
-    </Flex>
+    </Grid>
   </Box>
 
   {/* Expense Categories */}
   <Box 
-    gridColumn={{ base: "1 / -1", md: "span 2" }}
   >
     <Text fontSize="2xl" padding={5} mb={4} color="whiteAlpha.900">
       Expense Categories
     </Text>
     <Grid 
-      templateColumns={{ base: "1fr", sm: "repeat(auto-fill, minmax(150px, 1fr))", md: "repeat(auto-fill, minmax(200px, 1fr))" }} 
-      gap={10} 
+      templateColumns={{ base: "1fr 1fr 1fr",  }} 
+      gap={4} 
       px={{ base: 5, md: 10 }} 
       py={5}
     >
@@ -291,7 +291,7 @@ function getPreviousFinancialYear () {
       )
     }
      {
-      !loading && userId?.includes('admin')&&(
+      !loading && ['admin','personal.varshathgupta@gmail.com']?.includes(userId)&&(
         <Popover placement="top-end" closeOnBlur closeOnEsc onClose={onCloseRight} isOpen={isOpenRight}>
         <PopoverTrigger>
           <AddCategoryButton />

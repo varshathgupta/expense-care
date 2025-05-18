@@ -11,18 +11,21 @@ function ExpenseCard({ category, }) {
 
   return (
     <Card
-      h={blockAddExpense ?"130px": "190px"}
-      w={{ base: "250px", md: "250px" }}
+      h={blockAddExpense ?"100px": "140px"}
+      w={{ base: "250px", md: "200px" , sm:'100px'}}
       bgColor={"blue.700"}
       textAlign={"center"}
+      display={'flex'}
+      justifyContent={"space-between"}
+      alignItems={"space-between"}
+      gap={1}
       color={"text"}
-      // p={1}
       variant={"elevated"}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      borderRadius={"20px"}
+      borderRadius={"5px"}
     >
-      <CardHeader fontSize={"xl"} fontWeight={"semibold"} padding={'10px'}>
+      <CardHeader fontSize={"md"} fontWeight={"semibold"} padding={'9px'}>
         <Text>{name}</Text>
       </CardHeader>
       <CardBody

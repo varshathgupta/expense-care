@@ -21,8 +21,7 @@ import { loadingActions } from "../../store/loading-slice";
 import { addExpense } from "../../store/data-actions";
 import PropTypes from "prop-types"; // Import PropTypes for prop validation
 
-// Array of income categories that will be used to determine amountType
-const incomeCategories = ["receipts"];
+
 
 function AddExpenseButton(props) {
   const { categoryName, setHover, subCategories, type, initialData } = props; // Added initialData prop
@@ -35,10 +34,7 @@ function AddExpenseButton(props) {
     amount: initialData?.amount || "",
     description: initialData?.description || "",
     date: initialData?.date || new Date().toISOString().split("T")[0],
-    amountType:
-      categoryName && incomeCategories.includes(categoryName.toLowerCase())
-        ? "income"
-        : "expense",
+    amountType: type
   });
   const initialRef = useRef(null);
   const dispatch = useDispatch();
@@ -51,10 +47,8 @@ function AddExpenseButton(props) {
         amount: initialData?.amount || "",
         description: initialData?.description || "",
         date: initialData?.date || new Date().toISOString().split("T")[0],
-        amountType:
-          categoryName && incomeCategories.includes(categoryName.toLowerCase())
-            ? "income"
-            : "expense",
+        amountType: type
+          
       });
       setErrors({});
       setFormSubmitted(false);
@@ -110,8 +104,9 @@ function AddExpenseButton(props) {
     <>
       <Button
         colorScheme="pink"
-        mx={"auto"}
-        w={"150px"}
+         m={"auto"}
+        w={"120px"}
+        p={2}
         onClick={() => {
           onOpen();
           setHover(false);
