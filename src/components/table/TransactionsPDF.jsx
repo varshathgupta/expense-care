@@ -8,20 +8,31 @@ const TransactionsPDF = ({ filteredTransactions }) => {
   const pdfRef = useRef();
   const [openingBalance, setOpeningBalance] = useState(0);
   const [closingBalance, setClosingBalance] = useState(0);
+  const[loading,setLoading] = useState(false)
   const searchItemStartDate = localStorage.getItem("searchStartDate");
 
   // Utility to calculate previous month dates
-  const calculatePrevMonthDates = (startDate) => {
-    const newMonthDate = new Date(startDate);
-    newMonthDate.setMonth(newMonthDate.getMonth() - 1);
+  function getFinancialYearDates(startDate) {
+    const date = new Date(startDate);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1; // JS months are 0-based
 
-    const firstDay = newMonthDate.toISOString().split("T")[0];
-    const lastDay = new Date(newMonthDate.getFullYear(), newMonthDate.getMonth() + 1, 0)
-      .toISOString()
-      .split("T")[0];
+    let firstYear = month >= 4 ? year : year - 1;
+    let firstDay = new Date(firstYear, 3, 1); // April 1st of the financial year
 
-    return { firstDay, lastDay };
-  };
+    let lastDay;
+    if (month === 4) {
+        lastDay = new Date(firstYear, 3, 30); // April 30th of the same year
+    } else {
+        lastDay = new Date(date.getFullYear(), date.getMonth(), 0); // Last day of the previous month
+    }
+
+    return {
+        firstDay: `${firstDay.getFullYear()}-${(firstDay.getMonth() + 1).toString().padStart(2, '0')}-01`,
+        lastDay: `${lastDay.getFullYear()}-${(lastDay.getMonth() + 1).toString().padStart(2, '0')}-${lastDay.getDate()}`
+    };
+}
+  
 
   // Utility to calculate totals
   const calculateTotals = (transactions) => {
@@ -43,14 +54,17 @@ const TransactionsPDF = ({ filteredTransactions }) => {
     try {
     
       if (!searchItemStartDate) throw new Error("Start date not found in localStorage.");
-
-      const { firstDay, lastDay } = calculatePrevMonthDates(searchItemStartDate);
-      const prevMonthData = await listFilteredExpenses(null, firstDay, lastDay, null);
-
-      if (prevMonthData.length) {
-        const { totalDebit, totalCredit } = calculateTotals(prevMonthData);
-        const netBalance = totalCredit - totalDebit;
-        setOpeningBalance(netBalance);
+      if(searchItemStartDate.includes('04-01') ) {
+        setOpeningBalance(0);
+        return;
+      }else{
+        const { firstDay, lastDay } = getFinancialYearDates(searchItemStartDate);
+        const prevMonthData = await listFilteredExpenses(null, firstDay, lastDay, null);
+        if (prevMonthData.length) {
+          const { totalDebit, totalCredit } = calculateTotals(prevMonthData);
+          const netBalance = totalCredit - totalDebit;
+          setOpeningBalance(netBalance);
+        }
       }
     } catch (error) {
       console.error("Error fetching previous month's expenses:", error);
@@ -58,7 +72,6 @@ const TransactionsPDF = ({ filteredTransactions }) => {
   };
 
   useEffect(() => {
-    console.log(searchItemStartDate)
     if(searchItemStartDate !== null && searchItemStartDate !== undefined) {
       fetchPrevMonthFilteredExpenses();
     }
@@ -79,25 +92,32 @@ const TransactionsPDF = ({ filteredTransactions }) => {
     resolution: Resolution.HIGH,
     filename: getFileName(),
     page: { margin: Margin.LARGE },
-    canvas: { qualityRatio: 1 },
+    canvas: { qualityRatio: 1, useCORS: true }, // Ensure CORS images load
     overrides: {
       pdf: { compress: true },
       canvas: { useCORS: true },
     },
   };
+  
 
   const handleDownload = () => {
+    setLoading(true)
     generatePDF(pdfRef, options);
+    setTimeout(()=>{
+      setLoading(false)
+    },[12000])
   };
   const sortedTransactions = [...filteredTransactions].sort(
     (a, b) => new Date(a.date) - new Date(b.date)
   );
+
   // Styles
   const styles = {
     pdfContainer: {
-      position: "absolute",
-      top: "-10000px",
-      left: "-10000px",
+      position: 'absolute',
+      top: '-10000px',
+      left: '-10000px',
+      // Ensures text appears
     },
     header: {
       textAlign: "center",
@@ -140,8 +160,8 @@ const TransactionsPDF = ({ filteredTransactions }) => {
             <thead>
               <tr>
                 <th style={styles.thTd}>Date</th>
-                <th style={styles.thTd}>Name</th>
-                <th style={styles.thTd}>Description</th>
+                <th style={styles.thTd}>Remarks</th>
+                <th style={styles.thTd}>Name & Description</th>
                 <th style={styles.thTd}>Credit Amount (Rs.)</th>
                 <th style={styles.thTd}>Debit Amount (Rs.)</th>
               </tr>
@@ -198,8 +218,8 @@ const TransactionsPDF = ({ filteredTransactions }) => {
 
       {/* Visible button for downloading PDF */}
       <div style={styles.buttonContainer}>
-        <Button colorScheme="pink" maxW="225px" px="2%" onClick={handleDownload}>
-          Download Summary
+        <Button colorScheme="pink" maxW="225px" px="2%" onClick={handleDownload} disabled={loading}>
+         {loading ? 'Loading': 'Download Summary'} 
         </Button>
       </div>
     </>

@@ -55,15 +55,25 @@ async  function logoutHandler() {
       w={"100vw"}
     >
       <Flex>
-        <Text
-          fontSize={"3xl"}
+        <div style={{width:'150px', height:'35px', background:"lightgray" }}  >
+        <img src={window.location.origin +'/coc-logo.png'}  style={{
+          width:'100%', height:'100%', cursor: 'pointer'
+        }}
+        onClick={() => navigate("/dashboard")}
+       
+        />
+        </div>
+        {/* <Text
+          fontSize={"md"}
           fontWeight={"bold"}
           color={"teal.400"}
           onClick={() => navigate("/dashboard")}
           cursor={"pointer"}
+          paddingLeft={'10px'}
         >
-          ExpenseCare
+         (kombai)
         </Text>
+        */}
       </Flex>
       <Flex
         display={{ base: "none", md: "flex" }}

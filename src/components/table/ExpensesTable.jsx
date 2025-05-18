@@ -50,7 +50,7 @@ function ExpensesTable({ filteredExpenses, showAllColumns }) {
   // For Pagination
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [expensesPerPage, setExpensesPerPage] = useState(5); // Allow user to select expenses per page
+  const [expensesPerPage, setExpensesPerPage] = useState(10); // Allow user to select expenses per page
   const totalPages = Math.ceil(filteredExpenses.length / expensesPerPage);
 
   // Calculate the index of the first and last expense on the current page
@@ -58,6 +58,9 @@ function ExpensesTable({ filteredExpenses, showAllColumns }) {
   const indexOfFirstExpense = indexOfLastExpense - expensesPerPage;
   const currentExpenses = filteredExpenses.slice(indexOfFirstExpense, indexOfLastExpense);
 
+  // For blocking Actions for visitor
+const userEmail = localStorage.getItem("userEmail");
+ const visitorAccess = userEmail ==="visitor@expsecare.com"
   if (filteredExpenses.length === 0) {
     return (
       <Flex
@@ -85,12 +88,14 @@ function ExpensesTable({ filteredExpenses, showAllColumns }) {
         w={"90%"}
         mx={"auto"}
         bgColor={"lightgray"}
-        p={"2rem"}
+        p={"1rem"}
         rounded={"lg"}
         mb={"2rem"}
+        h={"350px"}
+        overflowY={"auto"}
       >
         <Table>
-          <Thead>
+          <Thead position="sticky" top={0} bgColor={"lightgray"} zIndex={1}>
             <Tr>
               <Th textColor={"blue.500"}>Transactions</Th>
               <Th textColor={"blue.500"}>AMOUNT (Rs.)</Th>
@@ -107,7 +112,7 @@ function ExpensesTable({ filteredExpenses, showAllColumns }) {
                 DATE
               </Th>
               <Th textColor={"blue.500"}>DESCRIPTION</Th>
-              <Th textColor={"blue.500"}>Actions</Th>
+              { !visitorAccess && <Th textColor={"blue.500"}>Actions</Th>}
             </Tr>
           </Thead>
           <Tbody>
@@ -126,9 +131,11 @@ function ExpensesTable({ filteredExpenses, showAllColumns }) {
                   })}
                 </Td>
                 <Td>{expense.description}</Td>
-                <Td>
+                {
+                  !visitorAccess && <Td>
                   <DropdownActions expense={expense} />
-                </Td>
+                  </Td>
+                }
               </Tr>
             ))}
           </Tbody>
@@ -151,9 +158,10 @@ function ExpensesTable({ filteredExpenses, showAllColumns }) {
           label="Select expenses per page"
           ml={2} // Added margin-left for spacing
         >
-          <option value={5}>5</option>
           <option value={10}>10</option>
           <option value={20}>20</option>
+          <option value={50}>50</option>
+          <option value={100}>100</option>
         </Select>
       </Flex>
       <Pagination

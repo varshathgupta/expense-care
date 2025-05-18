@@ -28,19 +28,31 @@ function Dashboard() {
   const [expenseData, setExpenseData] = useState([]);
   const [categories, setCategories] = useState({});
   const [showYearlyExpenses, setShowYearlyExpenses] = useState(false);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState(new Date().toLocaleString('default', { month: 'long' }));
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const { isOpen, onToggle, onClose } = useDisclosure();
   const { isOpen: isOpenRight, onClose: onCloseRight } = useDisclosure();
+  const userId = localStorage.getItem("userId");
+  const months =["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+  const currentMonth = new Date().getMonth();
+  const currentFinancialYear = getCurrentFinancialYear();
+  const previousFinancialYear = getPreviousFinancialYear()
 
   useEffect(() => {
-    
-    fetchDashboardData();
-  }, []);
+   if(showYearlyExpenses){
+    console.log("Selected Year: ", selectedYear);
+    fetchDashboardData(selectedYear, null)
+   }else{
+    fetchDashboardData(selectedYear, selectedMonth)
+   }
+  }, [showYearlyExpenses,selectedYear, selectedMonth]);
 
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = async (year, month) => {
     setLoading(true);
-    const data = await fetchData();
+    const data = await fetchData(year, month);
+    console.log("Data: ", data);
     if (data) {
       setExpenseData(data.expenses || []);
       const incomeCategories = data.categories?.filter(cat => cat.type === 'income') || [];
@@ -57,30 +69,20 @@ function Dashboard() {
       setLoading(false);
     }
   };
-  const calculateTotal = useCallback((categoryId, isYearly = false) => {
-    const currentMonth = new Date().getMonth();
-    const currentYear = new Date().getFullYear();
+  const calculateTotal = useCallback((categoryId,) => {
 
     if (categoryId === 'yearly' || categoryId === 'monthly') {
         return expenseData.reduce(
           (accumulator, expense) => {
-              const expenseDate = new Date(expense.date);
-              const isYearlyMatch = isYearly && expenseDate.getFullYear() === currentYear;
-              const isMonthlyMatch =
-                  !isYearly &&
-                  expenseDate.getMonth() === currentMonth &&
-                  expenseDate.getFullYear() === currentYear;
-      
-              if (isYearlyMatch || isMonthlyMatch) {
-                  if (expense.amountType === 'income') {
-                      accumulator.totalIncome += expense.amount || 0;
-                  } else if (expense.amountType === 'expense') {
-                      accumulator.totalExpense += expense.amount || 0;
-                  }
-      
-                  // Update balance dynamically
-                  accumulator.balance = accumulator.totalIncome - accumulator.totalExpense;
-              }
+            if (expense.amountType === 'income') {
+              accumulator.totalIncome += expense.amount || 0;
+          } else if (expense.amountType === 'expense') {
+              accumulator.totalExpense += expense.amount || 0;
+          }
+
+          // Update balance dynamically
+          accumulator.balance = accumulator.totalIncome - accumulator.totalExpense;
+     
       
               return accumulator;
           },
@@ -91,30 +93,38 @@ function Dashboard() {
 
     // Default behavior for other categories
     return expenseData.reduce((accumulator, expense) => {
-        const expenseDate = new Date(expense.date);
         const isMatchingCategory =
-            expense.categoryId.toLowerCase() === categoryId.toLowerCase();
-        const isYearlyMatch = isYearly && expenseDate.getFullYear() === currentYear;
-        const isMonthlyMatch =
-            !isYearly &&
-            expenseDate.getMonth() === currentMonth &&
-            expenseDate.getFullYear() === currentYear;
+            expense.categoryId.toLowerCase() === categoryId.toLowerCase();   
 
-        if (isMatchingCategory && (isYearlyMatch || isMonthlyMatch)) {
+        if (isMatchingCategory ) {
             accumulator += expense.amount || 0;
         }
 
         return accumulator;
     }, 0);
+    
 }, [expenseData]);
 
+function getCurrentFinancialYear() {
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth();
+  return currentMonth >= 3 ? `${currentYear}-${currentYear + 1}` : `${currentYear - 1}-${currentYear}`;
+}
+
+function getPreviousFinancialYear () {
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth();
+  return currentMonth >= 3 ? `${currentYear - 1}-${currentYear}` : `${currentYear - 2}-${currentYear - 1}`;
+}
 
 
   return (
     <Flex flexDir="column" gap={2} w="100vw" justifyContent="center">
       <Header />
       <TotalExpenseCard
-       data={calculateTotal(showYearlyExpenses ? 'yearly' : 'monthly',showYearlyExpenses)}
+       data={calculateTotal(showYearlyExpenses ? 'yearly' : 'monthly')}
       />
       <Text textColor="whiteAlpha.700" fontStyle="italic" textAlign="center" mt={2}>
         Cards are showing current {showYearlyExpenses ? "year's" : "month's"} expenses
@@ -145,7 +155,7 @@ function Dashboard() {
             key={category.$id} 
             category={{ 
               ...category, 
-              total: calculateTotal(category.name, showYearlyExpenses) 
+              total: calculateTotal(category.name,) 
             }} 
           />
         ))
@@ -174,7 +184,7 @@ function Dashboard() {
             key={category.$id} 
             category={{ 
               ...category, 
-              total: calculateTotal(category.name, showYearlyExpenses) 
+              total: calculateTotal(category.name) 
             }} 
           />
         ))
@@ -197,47 +207,99 @@ function Dashboard() {
           </Button>
         </PopoverTrigger>
         <Portal>
-          <PopoverContent bgColor="lightgray">
-            <PopoverArrow />
-            <PopoverCloseButton />
-            <PopoverHeader textAlign="center">Show Card Expenses</PopoverHeader>
-            <PopoverBody display="flex" flexDir="column" gap={1}>
-              <Button
-                w="100%"
-                bgColor={showYearlyExpenses ? "pink.500" : "inherit"}
-                _hover={{ bgColor: "pink.600" }}
-                _active={{ bgColor: "pink.600" }}
-                onClick={() => {
-                  setShowYearlyExpenses(true);
-                  onToggle();
-                }}
-              >
-                Yearly
-              </Button>
-              <Button
-                w="100%"
-                bgColor={showYearlyExpenses ? "inherit" : "pink.500"}
-                _hover={{ bgColor: "pink.600" }}
-                _active={{ bgColor: "pink.600" }}
-                onClick={() => {
-                  setShowYearlyExpenses(false);
-                  onToggle();
-                }}
-              >
-                Monthly
-              </Button>
-            </PopoverBody>
-          </PopoverContent>
+        <PopoverContent bgColor="lightgray">
+  <PopoverArrow />
+  <PopoverCloseButton />
+  <PopoverHeader textAlign="center">Show Card Expenses</PopoverHeader>
+  <PopoverBody display="flex" flexDir="column" gap={1} maxH="200px" overflowY="auto">
+    <Button
+      w="100%"
+      bgColor={showYearlyExpenses ? "pink.500" : "inherit"}
+      _hover={{ bgColor: "pink.600" }}
+      _active={{ bgColor: "pink.600" }}
+      onClick={() => {
+        setShowYearlyExpenses(true);
+        
+      setSelectedYear(currentFinancialYear);
+      }}
+    >
+     View Yearly
+    </Button>
+    <Button
+      w="100%"
+      bgColor={showYearlyExpenses ? "inherit" : "pink.500"}
+      _hover={{ bgColor: "pink.600" }}
+      _active={{ bgColor: "pink.600" }}
+      onClick={() => {
+        setShowYearlyExpenses(false);
+        const currentMonth = new Date().toLocaleString('default', { month: 'long' });
+        setSelectedMonth(currentMonth);
+        setSelectedYear(new Date().getFullYear());
+      }}
+    >
+      View Monthly
+    </Button>
+    {showYearlyExpenses ? (
+      <>
+  <Button
+    w="100%"
+    bgColor={selectedYear === currentFinancialYear ? "pink.500" : "inherit"}
+    _hover={{ bgColor: "pink.600" }}
+    _active={{ bgColor: "pink.600" }}
+    onClick={() => {
+      setSelectedYear(currentFinancialYear);
+    }}
+  >
+    {currentFinancialYear}
+  </Button>
+  <Button
+    w="100%"
+    bgColor={selectedYear === previousFinancialYear ? "pink.500" : "inherit"}
+    _hover={{ bgColor: "pink.600" }}
+    _active={{ bgColor: "pink.600" }}
+    onClick={() => {
+   
+      setSelectedYear(previousFinancialYear);
+    }}
+  >
+    {previousFinancialYear}
+  </Button>
+</>
+    ) : (
+      months
+      .filter((month, index) => index <= currentMonth)
+      .map((month) =>(
+        <Button
+          key={month}
+          w="100%"
+          bgColor={selectedMonth === month && selectedYear === new Date().getFullYear() ? "pink.500" : "inherit"}
+          _hover={{ bgColor: "pink.600" }}
+          _active={{ bgColor: "pink.600" }}
+          onClick={() => {
+            setSelectedMonth(month);
+            setSelectedYear(new Date().getFullYear());
+          }}
+        >
+          {month}
+        </Button>
+      ))
+    )}
+  </PopoverBody>
+</PopoverContent>
         </Portal>
       </Popover>
       )
     }
-     
-      <Popover placement="top-end" closeOnBlur closeOnEsc onClose={onCloseRight} isOpen={isOpenRight}>
+     {
+      !loading && userId?.includes('admin')&&(
+        <Popover placement="top-end" closeOnBlur closeOnEsc onClose={onCloseRight} isOpen={isOpenRight}>
         <PopoverTrigger>
           <AddCategoryButton />
         </PopoverTrigger>
       </Popover>
+      )
+     }
+      
     </Flex>
   );
 }

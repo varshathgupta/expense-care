@@ -29,7 +29,7 @@ function AllTransactions() {
       !searchElements.sortBy
     ) {
       setLoading(true)
-      fetchData()
+      fetchData(new Date().getFullYear(), new Date().toLocaleString('default', { month: 'long' }))
         .then((data) => {
           setFilteredExpenses(data.expenses);
           setLoading(false)
@@ -54,6 +54,8 @@ function AllTransactions() {
         searchElements.startDate,
         searchElements.endDate
       );
+    }else{
+      localStorage.removeItem('searchStartDate')
     }
   }, [searchElements.startDate, searchElements.endDate]);
   useEffect(() => {
@@ -63,7 +65,6 @@ function AllTransactions() {
   }, [searchElements.categoryId]);
   useEffect(()=>{
     if(searchElements.search){
-      console.log(searchElements.search)
       fetchSearchFilteredExpenses(searchElements.search)
     }
     

@@ -4,13 +4,14 @@ import  { useState } from "react";
 import AddExpenseButton from "./AddExpenseButton";
 
 function ExpenseCard({ category, }) {
-  const { name, total, id, subCategories, type, userId, userEmail } = category;
+  const { name, total, id, subCategories, type, userId } = category;
+  const userEmail = localStorage.getItem("userEmail");
   const [hover, setHover] = useState(false);
-
+  const blockAddExpense = userEmail ==="visitor@expsecare.com"
 
   return (
     <Card
-      h={"190px"}
+      h={blockAddExpense ?"130px": "190px"}
       w={{ base: "250px", md: "250px" }}
       bgColor={"blue.700"}
       textAlign={"center"}
@@ -33,8 +34,9 @@ function ExpenseCard({ category, }) {
       >
         &#x20b9; {total}
       </CardBody>
-      <CardFooter padding={'20px'}>
-        <AddExpenseButton
+      {
+      ! blockAddExpense && (
+          <AddExpenseButton
           hover={hover}
           setHover={setHover}
           categoryName={name}
@@ -42,8 +44,11 @@ function ExpenseCard({ category, }) {
           subCategories={subCategories}
           type={type}
           userId={userId}
-          userEmail={userEmail}
         />
+        )
+      }
+      <CardFooter padding={'20px'}>
+       
       </CardFooter>
     </Card>
   );

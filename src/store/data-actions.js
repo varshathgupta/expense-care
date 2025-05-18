@@ -2,9 +2,33 @@ import { ID, Query } from "appwrite";
 import { databases } from "../appwrite/appwrite-config";
 
 
-/* To fetch data after any changes in the database or to fetch data into state on login*/
-export async function fetchData() {
+export async function fetchData(year, month) {
   const categoriesList = [];
+  let startDate, endDate;
+  const monthNames = {
+    January: 1, February: 2, March: 3, April: 4, May: 5, June: 6,
+    July: 7, August: 8, September: 9, October: 10, November: 11, December: 12
+};
+
+if ( year < 1970 || year > 9999) {
+    throw new Error("Invalid year value");
+}
+
+if (month !== undefined && month !== null) {
+    if (typeof month === 'string') {
+        month = monthNames[month];
+    }
+    if (typeof month !== 'number' || month < 1 || month > 12) {
+        throw new Error("Invalid month value");
+    }
+}
+if ((month === undefined || month === null)&& typeof year !== 'number') {
+  startDate = new Date(Date.UTC(year.split('-')[0], 3, 1)); // Start of the financial year (April 1, 2024)
+  endDate = new Date(Date.UTC(year.split('-')[1], 2, 31, 23, 59, 59)); // End of the financial year (March 31, 2025)
+} else {
+  startDate = new Date(Date.UTC(year, month - 1, 1)); // Start of the month in UTC to avoid timezone issues
+  endDate = new Date(Date.UTC(year, month, 0, 23, 59, 59)); // Last day of the month (23:59:59 UTC)
+}
   try {
     // Fetch categories and expenses in parallel
     const [categories, expenses] = await Promise.all([
@@ -14,7 +38,12 @@ export async function fetchData() {
       ),
       databases.listDocuments(
         import.meta.env.VITE_DB_ID, 
-        import.meta.env.VITE_DB_EXPENSE_ID
+        import.meta.env.VITE_DB_EXPENSE_ID,
+        [
+          Query.greaterThanEqual("date", startDate.toISOString()), // Filter dates >= startDate
+          Query.lessThanEqual("date", endDate.toISOString()),  
+          Query.limit(7000), 
+        ]
       )
     ]);
     categoriesList.push(...categories.documents.map(cat => cat.name)); // Use spread operator for cleaner code
@@ -26,7 +55,7 @@ export async function fetchData() {
 
   } catch (error) {
     console.error("Error fetching data:", error);
-    throw error; // Re-throw to allow error handling by caller
+    throw error; 
   }
 }
 
@@ -36,7 +65,7 @@ export async function listFilteredExpenses(categoryType = null, startDate = null
   try {
     const filters = [];
     const sortOptions = [];
-
+filters.push( Query.limit(1000), )
     if (categoryType) {
       filters.push(Query.equal('categoryId', categoryType.toLowerCase())); // Corrected toLowercase() to toLowerCase()
     }
@@ -108,46 +137,7 @@ export function addCategory(userId, userEmail, categoryData) {
   };
 }
 
-/* To edit an existing category name */
-export function editCategoryName(categoryId, newCategoryName) {
-  return function (dispatch) {
-    const promise = databases.updateDocument(
-      import.meta.env.VITE_DB_ID,
-      import.meta.env.VITE_DB_CATEGORY_ID,
-      categoryId,
-      {
-        name: newCategoryName,
-      }
-    );
 
-    promise.then(
-      (updatedCategoryDocument) => {
-        const userId = updatedCategoryDocument.user.$id;
-        setTimeout(() => dispatch(fetchData(userId)), 3000);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  };
-}
-
-/* To delete a category and all its related documents i.e. expenses and its reference in user collection */
-export function deleteCategory(userId, categoryId) {
-  return function () {
-    const promise = databases.deleteDocument(
-      import.meta.env.VITE_DB_ID,
-      import.meta.env.VITE_DB_CATEGORY_ID,
-      categoryId
-    );
-
-    promise.then(() => {
-      console.log("Deleted");
-    }).catch((error) => {
-      console.log(error);
-    });
-  };
-}
 
 /* To add an expense to a particular category (also updates the totalAmount of that category and fetch the updated data into the state) */
 export function addExpense(

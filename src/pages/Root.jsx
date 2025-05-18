@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import  { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
 import Loading from "../components/utility/Loading";
@@ -7,7 +7,6 @@ function Root() {
  
   const isLoading = useSelector((state) => state.loading.isLoading);
   const sessionId = localStorage.getItem('sessionId');
-  console.log(sessionId);
   const navigate = useNavigate();
 
   useEffect(() => {

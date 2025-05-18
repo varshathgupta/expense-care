@@ -4,7 +4,6 @@ import { loadingActions } from "./loading-slice";
 
 
 export function logout(sessionId, userId) {
-  console.log(sessionId, userId);
   return function (dispatch) {
     if (sessionId) {
       const promise = account.deleteSession(sessionId);
