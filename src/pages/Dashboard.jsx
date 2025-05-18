@@ -52,7 +52,6 @@ function Dashboard() {
   const fetchDashboardData = async (year, month) => {
     setLoading(true);
     const data = await fetchData(year, month);
-    console.log("Data: ", data);
     if (data) {
       setExpenseData(data.expenses || []);
       const incomeCategories = data.categories?.filter(cat => cat.type === 'income') || [];
@@ -74,7 +73,6 @@ function Dashboard() {
     if (categoryId === 'yearly' || categoryId === 'monthly') {
         return expenseData.reduce(
           (accumulator, expense) => {
-            console.log("Expense: ", expense);
             if (expense.amountType === 'income') {
               accumulator.totalIncome += expense.amount || 0;
           } else if (expense.amountType === 'expense') {
