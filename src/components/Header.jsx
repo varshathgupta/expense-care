@@ -54,17 +54,26 @@ async  function logoutHandler() {
       zIndex={"sticky"}
       w={"100vw"}
     >
-      <Flex>
+<Flex>
+        <div style={{width:'150px', height:'35px', background:"lightgray" }}  >
+        <img src={window.location.origin +'/coc-logo.png'}  style={{
+          width:'100%', height:'100%', cursor: 'pointer'
+        }}
+        onClick={() => navigate("/dashboard")}
        
-      <Text
-          fontSize={"3xl"}
+        />
+        </div>
+        <Text
+          fontSize={"md"}
           fontWeight={"bold"}
           color={"teal.400"}
           onClick={() => navigate("/dashboard")}
           cursor={"pointer"}
+          paddingLeft={'10px'}
         >
-          ExpenseCare
+         (Uthamapalayam) 
         </Text>
+       
       </Flex>
       <Flex
         display={{ base: "none", md: "flex" }}
@@ -96,6 +105,7 @@ async  function logoutHandler() {
         <Menu>
           <MenuButton
             as={Button}
+            color={"#fff"}
             bgColor={"inherit"}
             _hover={{ bgColor: "inherit", fontWeight: "medium" }}
             rightIcon={<ChevronDownIcon />}
@@ -110,6 +120,7 @@ async  function logoutHandler() {
             <MenuItem
               as={RouteLink}
               to={"/help"}
+               color={"#fff"}
               bgColor={"lightgray"}
               _hover={{ bgColor: "teal.400" }}
             >

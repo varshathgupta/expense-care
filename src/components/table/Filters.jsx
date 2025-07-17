@@ -119,6 +119,7 @@ function Filters({ setSearchElements, setShowAllColumns, showAllColumns }) {
           <Menu>
             <MenuButton
               bgColor={"lightgray"}
+               color={"#fff"}
               _hover={{
                 border: "solid",
                 borderWidth: "1px",
@@ -181,6 +182,7 @@ function Filters({ setSearchElements, setShowAllColumns, showAllColumns }) {
           <Menu>
             <MenuButton
               bgColor={"lightgray"}
+               color={"#fff"}
               _hover={{
                 border: "solid",
                 borderWidth: "1px",
@@ -295,6 +297,7 @@ function Filters({ setSearchElements, setShowAllColumns, showAllColumns }) {
           <Button
             display={{ base: "none", md: "flex" }}
             bgColor={"lightgray"}
+             color={"#fff"}
             _hover={{
               border: "solid",
               borderWidth: "1px",

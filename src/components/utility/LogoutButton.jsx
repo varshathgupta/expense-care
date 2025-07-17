@@ -25,6 +25,7 @@ function LogoutButton({ logoutHandler }) {
     <>
       <Button
         bgColor={"inherit"}
+         color={"#fff"}
         onClick={onOpen}
         rightIcon={<LogOutIcon />}
         _hover={{ bgColor: "teal.400" }}

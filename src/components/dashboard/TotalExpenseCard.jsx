@@ -35,6 +35,7 @@ function TotalExpenseCard({ data }) {
       <Text>Total Savings: <b style={{color: data.balance >0 ?'#6ca509':'#d53f8c'}}> &#x20b9; {data.balance}</b></Text>
       <Button
         as={Link}
+         color={"#fff"}
         rightIcon={<ArrowForwardIcon />}
         to="/charts"
         rounded={"lg"}

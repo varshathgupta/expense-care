@@ -213,6 +213,7 @@ function getPreviousFinancialYear () {
     <Button
       w="100%"
       bgColor={showYearlyExpenses ? "pink.500" : "inherit"}
+       color={"#fff"}
       _hover={{ bgColor: "pink.600" }}
       _active={{ bgColor: "pink.600" }}
       onClick={() => {
@@ -226,6 +227,7 @@ function getPreviousFinancialYear () {
     <Button
       w="100%"
       bgColor={showYearlyExpenses ? "inherit" : "pink.500"}
+       color={"#fff"}
       _hover={{ bgColor: "pink.600" }}
       _active={{ bgColor: "pink.600" }}
       onClick={() => {
@@ -242,6 +244,7 @@ function getPreviousFinancialYear () {
   <Button
     w="100%"
     bgColor={selectedYear === currentFinancialYear ? "pink.500" : "inherit"}
+     color={"#fff"}
     _hover={{ bgColor: "pink.600" }}
     _active={{ bgColor: "pink.600" }}
     onClick={() => {
@@ -253,6 +256,7 @@ function getPreviousFinancialYear () {
   <Button
     w="100%"
     bgColor={selectedYear === previousFinancialYear ? "pink.500" : "inherit"}
+     color={"#fff"}
     _hover={{ bgColor: "pink.600" }}
     _active={{ bgColor: "pink.600" }}
     onClick={() => {
@@ -269,6 +273,7 @@ function getPreviousFinancialYear () {
       .map((month) =>(
         <Button
           key={month}
+           color={"#fff"}
           w="100%"
           bgColor={selectedMonth === month && selectedYear === new Date().getFullYear() ? "pink.500" : "inherit"}
           _hover={{ bgColor: "pink.600" }}

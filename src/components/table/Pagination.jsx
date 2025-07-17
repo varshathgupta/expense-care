@@ -13,6 +13,7 @@ const Pagination = ({ currentPage, setCurrentPage, totalPages }) => {
     <Flex
       w="90vw"
       mx="auto"
+      
       justifyContent="center"
       alignItems="center"
       p={4}
@@ -22,6 +23,7 @@ const Pagination = ({ currentPage, setCurrentPage, totalPages }) => {
       <Button
         h={12}
         w={20}
+        color={"#fff"}
         bgColor="lightgray"
         borderRadius={0}
         mr="1rem"
@@ -35,6 +37,7 @@ const Pagination = ({ currentPage, setCurrentPage, totalPages }) => {
       {pageNumbers.map((pageNumber) => (
         <Button
           key={pageNumber}
+           color={"#fff"}
           h={12}
           w={12}
           data-key={pageNumber}
@@ -53,6 +56,7 @@ const Pagination = ({ currentPage, setCurrentPage, totalPages }) => {
       <Button
         h={12}
         w={20}
+         color={"#fff"}
         bgColor="lightgray"
         borderRadius={0}
         ml="1rem"
