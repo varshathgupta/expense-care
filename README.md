@@ -32,7 +32,7 @@
 ## Tech Stack
 - **React**: For building the user interface.
 - **Chakra UI**: For a responsive and visually appealing design.
-- **react-to-pdf**: For generating PDF statements and summaries.
+- **jspdf**: For generating PDF statements and summaries.
 - **Recharts**: For rendering interactive and insightful charts.
 - **Appwrite**: For database and business logic.
 

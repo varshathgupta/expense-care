@@ -18,6 +18,8 @@
     "@tanstack/react-table": "^8.9.1",
     "appwrite": "^11.0.0",
     "framer-motion": "^10.12.16",
+    "jspdf": "^3.0.1",
+    "jspdf-autotable": "^5.0.2",
     "lucide-react": "^0.224.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -25,7 +27,6 @@
     "react-redux": "^8.0.7",
     "react-router-dom": "^6.11.2",
     "react-spinners": "^0.13.8",
-    "react-to-pdf": "^1.0.1",
     "recharts": "^2.6.2"
   },
   "devDependencies": {

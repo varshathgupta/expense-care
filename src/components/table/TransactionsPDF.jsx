@@ -1,11 +1,11 @@
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@chakra-ui/react";
-import generatePDF, { Resolution, Margin } from "react-to-pdf";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 import PropTypes from "prop-types";
 import { listFilteredExpenses } from "../../store/data-actions";
 
 const TransactionsPDF = ({ filteredTransactions }) => {
-  const pdfRef = useRef();
   const [openingBalance, setOpeningBalance] = useState(0);
   const [closingBalance, setClosingBalance] = useState(0);
   const[loading,setLoading] = useState(false)
@@ -79,6 +79,7 @@ const TransactionsPDF = ({ filteredTransactions }) => {
 
   // Calculate closing balance
   useEffect(() => {
+
     const { totalDebit, totalCredit } = calculateTotals(filteredTransactions);
     setClosingBalance(openingBalance + totalCredit - totalDebit);
   }, [filteredTransactions, openingBalance]);
@@ -87,142 +88,124 @@ const TransactionsPDF = ({ filteredTransactions }) => {
     const timestamp = new Date().getTime();
     return `transaction_report_${timestamp}`;
   };
-
-  const options = {
-    resolution: Resolution.HIGH,
-    filename: getFileName(),
-    page: { margin: Margin.LARGE },
-    canvas: { qualityRatio: 1, useCORS: true }, // Ensure CORS images load
-    overrides: {
-      pdf: { compress: true },
-      canvas: { useCORS: true },
-    },
-  };
   
-
-  const handleDownload = () => {
-    setLoading(true)
-    generatePDF(pdfRef, options);
-    setTimeout(()=>{
-      setLoading(false)
-    },[12000])
-  };
   const sortedTransactions = [...filteredTransactions].sort(
     (a, b) => new Date(a.date) - new Date(b.date)
   );
 
-  // Styles
-  const styles = {
-    pdfContainer: {
-      position: 'absolute',
-      top: '-10000px',
-      left: '-10000px',
-      // Ensures text appears
-    },
-    header: {
-      textAlign: "center",
-      fontSize: "24px",
-      fontWeight: "bold",
-      marginBottom: "16px",
-    },
-    table: {
-      width: "100%",
-      borderCollapse: "collapse",
-    },
-    thTd: {
-      border: "1px solid black",
-      padding: "8px",
-    },
-    rightAlign: {
-      textAlign: "right",
-    },
-    centerAlign:{
-      textAlign: "center",
-    },
-    totalRow: {
-      fontWeight: "bold",
-    },
-    buttonContainer: {
-      display: "flex",
-      justifyContent: "flex-end",
-      marginBottom: "1rem",
-      marginRight: "4.5rem",
-    },
+  // Generate PDF using jsPDF and jsPDF-autotable
+  const handleDownload = () => {
+    setLoading(true);
+    try {
+      const doc = new jsPDF();
+      
+      // Add title
+      doc.setFontSize(18);
+      doc.text("Transactions Summary", doc.internal.pageSize.getWidth() / 2, 15, { align: 'center' });
+      doc.setFontSize(10);
+      
+      let currentY = 25;
+
+      // Opening balance row
+      const openingBalanceTable = autoTable(doc, {
+        head: [['Opening Balance', '  ', '  ', '  ', openingBalance.toString()]],
+        startY: currentY,
+        headStyles: { fillColor: [240, 240, 240], textColor: [0, 0, 0], fontStyle: 'bold' },
+        theme: 'grid',
+        columnStyles: {
+          0: { cellWidth: 'auto' },
+          4: { halign: 'center', cellWidth: 40 }
+        },
+        margin: { top: currentY }
+      });
+
+      // Update current Y position
+      currentY = (openingBalanceTable && openingBalanceTable.finalY) ? openingBalanceTable.finalY + 5 : currentY ;
+      
+      // Transactions table
+      const tableHeaders = [['Date', 'Remarks', 'Description', 'Credit (Rs.)', 'Debit (Rs.)']];
+      
+      // Transform transactions data for the table
+      const tableData = sortedTransactions.map(transaction => [
+        new Date(transaction.date).toLocaleDateString('en-GB'),
+        transaction.name,
+        transaction.description,
+        transaction.amountType === 'income' ? transaction.amount.toString() : '0',
+        transaction.amountType === 'expense' ? transaction.amount.toString() : '0'
+      ]);
+      
+      // Calculate total credit and debit
+      const totalCredit = filteredTransactions.reduce(
+        (acc, transaction) => transaction.amountType === 'income' ? acc + transaction.amount : acc, 
+        0
+      );
+      const totalDebit = filteredTransactions.reduce(
+        (acc, transaction) => transaction.amountType === 'expense' ? acc + transaction.amount : acc, 
+        0
+      );
+
+      // Combine transaction data with totals
+      const allTableData = [
+        ...tableData,
+        ['', '', '', '', ''], // Empty row for spacing
+        ['Total', '', '', totalCredit.toString(), totalDebit.toString()],
+        ['Closing Balance', '', '', '', closingBalance.toString()]
+      ];
+
+      // Generate complete table with transactions and totals
+      autoTable(doc, {
+        head: tableHeaders,
+        body: allTableData,
+        startY: currentY,
+        theme: 'grid',
+        columnStyles: {
+          0: { cellWidth: 25 },
+          3: { halign: 'right' },
+          4: { halign: 'right' }
+        },
+        headStyles: { fillColor: [240, 240, 240], textColor: [0, 0, 0], fontStyle: 'bold' },
+        didDrawPage: () => {
+          // Header on each page
+          doc.setFontSize(10);
+          doc.text("", doc.internal.pageSize.getWidth() / 2, 10, { align: 'center' });
+        },
+        styles: {
+          cellPadding: 2,
+          fontSize: 10
+        },
+        // Style the total and closing balance rows
+        didParseCell: function(data) {
+          const row = data.row.raw[0];
+          if (row === 'Total' || row === 'Closing Balance') {
+            data.cell.styles.fontStyle = 'bold';
+            data.cell.styles.fillColor = [240, 240, 240];
+            data.cell.styles.textColor = [0, 0, 0];
+          }
+        }
+      });
+      
+      // Save the PDF
+      doc.save(getFileName() + '.pdf');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const buttonContainerStyle = {
+    display: "flex",
+    justifyContent: "flex-end",
+    marginBottom: "1rem",
+    marginRight: "4.5rem",
   };
 
   return (
-    <>
-      {/* Hidden content for PDF generation */}
-      <div style={styles.pdfContainer}>
-        <div ref={pdfRef} style={{ color: "#333" }}>
-          <h1 style={styles.header}>Transactions Summary</h1>
-          <table style={styles.table}>
-            <thead>
-              <tr>
-                <th style={styles.thTd}>Date</th>
-                <th style={styles.thTd}>Remarks</th>
-                <th style={styles.thTd}>Name & Description</th>
-                <th style={styles.thTd}>Credit Amount (Rs.)</th>
-                <th style={styles.thTd}>Debit Amount (Rs.)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td colSpan="3" style={{ ...styles.thTd, ...styles.totalRow }}>Opening Balance</td>
-                <td colSpan="2" style={{ ...styles.thTd, ...styles.totalRow, ...styles.centerAlign }}>
-                  {openingBalance}
-                </td>
-              </tr>
-              {sortedTransactions.map((transaction) => (
-                <tr key={transaction.$id}>
-                  <td style={styles.thTd}>
-                    {new Date(transaction.date).toLocaleDateString("en-GB")}
-                  </td>
-                  <td style={styles.thTd}>{transaction.name}</td>
-                  <td style={styles.thTd}>{transaction.description}</td>
-                  <td style={{ ...styles.thTd, ...styles.rightAlign }}>
-                    {transaction.amountType === "income" ? transaction.amount : 0}
-                  </td>
-                  <td style={{ ...styles.thTd, ...styles.rightAlign }}>
-                    {transaction.amountType === "expense" ? transaction.amount : 0}
-                  </td>
-                </tr>
-              ))}
-              <tr>
-                <td colSpan="3" style={{ ...styles.thTd, ...styles.totalRow }}>Total</td>
-                <td style={{ ...styles.thTd, ...styles.totalRow, ...styles.rightAlign }}>
-                  {filteredTransactions.reduce(
-                    (acc, transaction) =>
-                      transaction.amountType === "income" ? acc + transaction.amount : acc,
-                    0
-                  )}
-                </td>
-                <td style={{ ...styles.thTd, ...styles.totalRow, ...styles.rightAlign }}>
-                  {filteredTransactions.reduce(
-                    (acc, transaction) =>
-                      transaction.amountType === "expense" ? acc + transaction.amount : acc,
-                    0
-                  )}
-                </td>
-              </tr>
-              <tr>
-                <td colSpan="3" style={{ ...styles.thTd, ...styles.totalRow }}>Closing Balance</td>
-                <td colSpan="2" style={{ ...styles.thTd, ...styles.totalRow, ...styles.centerAlign }}>
-                  {closingBalance}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Visible button for downloading PDF */}
-      <div style={styles.buttonContainer}>
-        <Button colorScheme="pink" maxW="225px" px="2%" onClick={handleDownload} disabled={loading}>
-         {loading ? 'Loading': 'Download Summary'} 
-        </Button>
-      </div>
-    </>
+    <div style={buttonContainerStyle}>
+      <Button colorScheme="pink" maxW="225px" px="2%" onClick={handleDownload} disabled={loading}>
+        {loading ? 'Loading' : 'Download Summary'} 
+      </Button>
+    </div>
   );
 };
 
