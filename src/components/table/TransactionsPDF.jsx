@@ -120,7 +120,7 @@ const TransactionsPDF = ({ filteredTransactions }) => {
       });
 
       // Update current Y position
-      currentY = (openingBalanceTable && openingBalanceTable.finalY) ? openingBalanceTable.finalY + 5 : currentY ;
+      currentY = (openingBalanceTable && openingBalanceTable.finalY) ? openingBalanceTable.finalY + 5 : currentY +20;
       
       // Transactions table
       const tableHeaders = [['Date', 'Remarks', 'Description', 'Credit (Rs.)', 'Debit (Rs.)']];
